@@ -62,3 +62,60 @@ export const getAllPost = async (req, res) => {
         console.log(error);
     }
 };
+
+export const getUserPost = async (req, res) => {
+    try {
+        const authorId = req.id;
+        const posts = await Post.find({ author: authorId }).sort({ createdAt: -1 }).populate({
+            path: 'author',
+            select: 'username, profilePicture'
+        }).populate({
+            path: 'comments',
+            sort: { createdAt: -1 },
+            populate: {
+                path: 'author',
+                select: 'username, profilePicture'
+            }
+        });
+        return res.status(200).json({
+            posts,
+            success: true
+        })
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export const likePost = async (req, res) => {
+    try {
+        const userIDwhoLikedPost = req.id;
+        const postId = req.params.id; 
+        const post = await Post.findById(postId);
+        if (!post) return res.status(404).json({ message: 'Post not found', success: false });
+
+     
+        await post.updateOne({ $addToSet: { likes: userIDwhoLikedPost } });
+        await post.save();
+
+        return res.status(200).json({message:'Post liked', success:true});
+    } catch (error) {
+
+    }
+}
+export const dislikePost = async (req, res) => {
+    try {
+        const userIDwhoLikedPost = req.id;
+        const postId = req.params.id; 
+        const post = await Post.findById(postId);
+        if (!post) return res.status(404).json({ message: 'Post not found', success: false });
+
+     
+        await post.updateOne({ $pull: { likes: userIDwhoLikedPost } });
+        await post.save();
+
+        return res.status(200).json({message:'Post disliked', success:true});
+    } catch (error) {
+
+    }
+}
+
