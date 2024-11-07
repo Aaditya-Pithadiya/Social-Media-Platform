@@ -1,0 +1,12 @@
+{
+  "name": "social-media-platform",
+  "version": "1.0.0",
+  "description": "A software engineering project from group 14.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
