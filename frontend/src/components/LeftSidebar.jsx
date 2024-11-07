@@ -17,7 +17,7 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';  
 import { useDispatch, useSelector } from 'react-redux'
-import { someAction } from '../redux/authSlice';  // Go up one directory to src/redux/authSlice.js
+import { setAuthUser } from '../redux/authSlice';   
 
 
 
@@ -43,12 +43,13 @@ const LeftSidebar = () => {
       setSidebarOpen(true);
     }
   };
+  //console.log(user)
 
   const logoutHandler = async () => {
     try {
       const res = await axios.get('http://localhost:8000/api/v1/user/logout', { withCredentials: true });
       if (res.data.success) {
-         // dispatch(setAuthUser(null));
+         dispatch(setAuthUser(null));
           // dispatch(setSelectedPost(null));
           // dispatch(setPosts([]));
           navigate("/login");

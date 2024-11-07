@@ -9,7 +9,8 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';  
-
+import { useDispatch } from "react-redux";
+import { setAuthUser } from '../redux/authSlice';
 
 const AuthForm = () => {
   const [isLoginActive, setIsLoginActive] = useState(true);
@@ -20,6 +21,7 @@ const AuthForm = () => {
   const [termsAccepted, setTermsAccepted] = useState(false);
   const navigate = useNavigate();
   const [loading,setLoading]=useState(false);
+  const dispatch = useDispatch();
  
   useEffect(() => {
     setEmail("");
@@ -41,16 +43,17 @@ const AuthForm = () => {
                 withCredentials: true
             });
             if (res.data.success) {
-               // dispatch(setAuthUser(res.data.user));
+                dispatch(setAuthUser(res.data.user));
                 navigate("/");
                 toast.success(res.data.message);
                 setEmail("");
                 setPassword("");
             }
         } catch (error) {
-            console.log(error);
-            toast.error(error.response.data.message);
-        } finally {
+          console.log(error);
+          const errorMessage = error.response?.data?.message || "An error occurred.";
+          toast.error(errorMessage);
+      } finally {
             setLoading(false);
         }
   };
@@ -73,10 +76,11 @@ const AuthForm = () => {
             setEmail("");
             setPassword("");
         }
-    } catch (error) {
-        console.log(error);
-        toast.error(error.response.data.message);
-    } finally {
+    }catch (error) {
+      console.log(error);
+      const errorMessage = error.response?.data?.message || "An error occurred.";
+      toast.error(errorMessage);
+  } finally {
         setLoading(false);
     }
 };
