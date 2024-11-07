@@ -1,12 +1,12 @@
 // App.jsx
 import React from 'react';
-import Home from './component/Home';
-import MainLayout from './component/MainLayout';
-import AuthForm from './component/AuthForm';
+import Home from './components/Home';
+import MainLayout from './components/MainLayout';
+import AuthForm from './components/AuthForm';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
-import Profile from './component/Profile';
+import Profile from './components/Profile';
 
 // Configure routes
 const browserRouter = createBrowserRouter([
@@ -14,12 +14,8 @@ const browserRouter = createBrowserRouter([
     path: "/",
     element: <MainLayout />, // Render MainLayout at the root
     children: [
-      // {
-      //   path: "/",
-      //   element: <MainLayout/>, // Redirect root path to /signup
-      // },
       {
-        path: "/home",
+        path: "/",
         element: <Home />, // Home component as nested route
       },
       {
