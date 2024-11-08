@@ -4,23 +4,10 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Link } from 'react-router-dom';
 import { MoreHorizontal } from 'lucide-react';
 import { Button } from './ui/button';
-// import { useDispatch, useSelector } from 'react-redux'
-// import Comment from './Comment'
-// import axios from 'axios'
-// import { toast } from 'sonner'
-// import { setPosts } from '@/redux/postSlice'
+
 
 const CommentDialog = ({ open, setOpen }) => {
    const [text, setText] = useState("");
-  // const { selectedPost, posts } = useSelector(store => store.post);
-  // const [comment, setComment] = useState([]);
-  // const dispatch = useDispatch();
-
-  // useEffect(() => {
-  //   if (selectedPost) {
-  //     setComment(selectedPost.comments);
-  //   }
-  // }, [selectedPost]);
 
   const changeEventHandler = (e) => {
     const inputText = e.target.value;
@@ -32,29 +19,7 @@ const CommentDialog = ({ open, setOpen }) => {
   }
 
   const sendMessageHandler = async () => {
-    alert(text);
-    // try {
-    //   const res = await axios.post(`https://instaclone-g9h5.onrender.com/api/v1/post/${selectedPost?._id}/comment`, { text }, {
-    //     headers: {
-    //       'Content-Type': 'application/json'
-    //     },
-    //     withCredentials: true
-    //   });
-
-    //   if (res.data.success) {
-    //     const updatedCommentData = [...comment, res.data.comment];
-    //     setComment(updatedCommentData);
-
-    //     const updatedPostData = posts.map(p =>
-    //       p._id === selectedPost._id ? { ...p, comments: updatedCommentData } : p
-    //     );
-    //     dispatch(setPosts(updatedPostData));
-    //     toast.success(res.data.message);
-    //     setText("");
-    //   }
-    // } catch (error) {
-    //   console.log(error);
-    // }
+    
 }
 
   return (
@@ -80,7 +45,7 @@ const CommentDialog = ({ open, setOpen }) => {
                 </Link>
                 <div>  
                   <Link className='font-semibold text-xs'>username</Link>
-                  {/* <span className='text-gray-600 text-sm'>Bio here...</span> */}
+                
                 </div>
               </div>
 
@@ -100,9 +65,7 @@ const CommentDialog = ({ open, setOpen }) => {
             </div>
             <hr />
             <div className='flex-1 overflow-y-auto max-h-96 p-4'>
-              {/* {
-                comment.map((comment) => <Comment key={comment._id} comment={comment} />)
-              } */}
+              
               comments aayenge
             </div>
             <div className='p-4'>

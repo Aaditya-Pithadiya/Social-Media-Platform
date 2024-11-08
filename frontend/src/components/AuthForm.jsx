@@ -9,7 +9,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';  
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from 'react-redux';
 import { setAuthUser } from '../redux/authSlice';
 
 const AuthForm = () => {
@@ -22,7 +22,6 @@ const AuthForm = () => {
   const navigate = useNavigate();
   const [loading,setLoading]=useState(false);
   const dispatch = useDispatch();
- 
   useEffect(() => {
     setEmail("");
     setPassword("");
@@ -43,7 +42,7 @@ const AuthForm = () => {
                 withCredentials: true
             });
             if (res.data.success) {
-                dispatch(setAuthUser(res.data.user));
+               dispatch(setAuthUser(res.data.user));
                 navigate("/");
                 toast.success(res.data.message);
                 setEmail("");

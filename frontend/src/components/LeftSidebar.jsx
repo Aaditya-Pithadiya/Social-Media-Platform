@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import { 
   AiOutlineHome, 
   AiOutlineSearch, 
@@ -11,15 +10,18 @@ import {
   AiOutlineMenu, 
   AiOutlineStar 
 } from 'react-icons/ai';
-import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar"; 
-import { useNavigate } from "react-router-dom";
-import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
+
+
 import 'react-toastify/dist/ReactToastify.css';  
-import { useDispatch, useSelector } from 'react-redux'
-import { setAuthUser } from '../redux/authSlice';   
-
-
+import React, { useState } from 'react'
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
+import { toast } from 'sonner'
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { setAuthUser } from '../redux/authSlice'
+import CreatePost from './CreatePost'
+import { setPosts, setSelectedPost } from '../redux/postSlice'
 
 
 
@@ -28,9 +30,9 @@ const LeftSidebar = () => {
   const [menuButtonVisible, setMenuButtonVisible] = useState(false);
   const [activeItem, setActiveItem] = useState('Home');
   const navigate = useNavigate();
-  const { user } = useSelector(store => store.auth);
+  const [open,setOpen]=useState(false);
   const dispatch = useDispatch();
-  const [open, setOpen] = useState(false);
+
 
   const toggleSidebar = () => {
     if (sidebarOpen) {
@@ -45,20 +47,10 @@ const LeftSidebar = () => {
   };
   //console.log(user)
 
-  const logoutHandler = async () => {
-    try {
-      const res = await axios.get('http://localhost:8000/api/v1/user/logout', { withCredentials: true });
-      if (res.data.success) {
-         dispatch(setAuthUser(null));
-          // dispatch(setSelectedPost(null));
-          // dispatch(setPosts([]));
-          navigate("/login");
-          toast.success(res.data.message);
-      }
-  } catch (error) {
-      toast.error(error.response.data.message);
-  }
-  };
+  
+
+  const { user } = useSelector(store => store.auth);
+
   const sidebarItems = [
     { icon: <AiOutlineHome className="w-6 h-6" />, text: "Home" },
     { icon: <AiOutlineSearch className="w-6 h-6" />, text: "Search" },
@@ -81,6 +73,30 @@ const LeftSidebar = () => {
     },
     { icon: <AiOutlineLogout className="w-6 h-6" />, text: "Logout" },
   ];
+  
+  
+
+  const logoutHandler = async () => {
+    try {
+        const res = await axios.get('http://localhost:8000/api/v1/user/logout', { withCredentials: true });
+        console.log(res);
+        if (res.data.success) {
+            dispatch(setAuthUser(null));
+            dispatch(setSelectedPost(null));
+            dispatch(setPosts([]));
+            navigate("/login");
+            
+            toast.success(res.data.message);
+        }
+    } catch (error) {
+        toast.error(error.response.data.message);
+    }
+}
+
+  // const createPostHandler = () =>{
+    
+    
+  // }
 
   return (
     <div>
@@ -108,7 +124,7 @@ const LeftSidebar = () => {
           <div className="flex items-center justify-between px-6 py-6 border-b border-purple-100">
             <div className="flex items-center gap-2">
               <AiOutlineStar className="w-6 h-6 text-purple-600" />
-              <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600">
+              <h1 className="text-xl font-bold    bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600">
                 Vibehub
               </h1>
             </div>
@@ -125,7 +141,8 @@ const LeftSidebar = () => {
             {sidebarItems.map((item, index) => (
               <button
                 key={index}
-                onClick={() => item.text === "Logout" ? logoutHandler() : setActiveItem(item.text)}
+                onClick={() =>{ if(item.text === "Logout"){ logoutHandler()}
+                else if(item.text==="Create"){setOpen(true);} else setActiveItem(item.text)}}
                 className={`flex items-center gap-4 p-3 rounded-lg transition-all duration-300
                   ${activeItem === item.text 
                     ? 'bg-gradient-to-r from-purple-500 to-purple-600 text-white shadow-lg shadow-purple-200'
@@ -158,7 +175,10 @@ const LeftSidebar = () => {
             </div>
           </div> */}
         </div>
+        <CreatePost open={open} setOpen={setOpen}/>
+   
       </div>
+     
     </div>
   );
 };
