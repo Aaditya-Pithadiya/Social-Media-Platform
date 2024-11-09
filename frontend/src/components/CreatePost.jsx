@@ -65,7 +65,7 @@ const CreatePost = ({open,setOpen}) => {
                     <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
                 <div>
-                    <h1 className='font-semibold text-xs'>{user.username}</h1>
+                    <h1 className='font-semibold text-xs'>{user?.username}</h1>
                     <span className='text-gray-600 text-xs'>Bio here...</span>
                 </div>
             </div>
