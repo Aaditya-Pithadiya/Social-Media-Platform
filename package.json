@@ -8,5 +8,9 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@reduxjs/toolkit": "^2.3.0",
+    "react-redux": "^9.1.2"
+  }
 }
