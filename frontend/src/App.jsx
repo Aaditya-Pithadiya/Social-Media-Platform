@@ -19,7 +19,7 @@ const browserRouter = createBrowserRouter([
         element: <Home />, // Home component as nested route
       },
       {
-        path: "/profile",
+        path: "/profile/:id",
         element: <Profile />, // Profile component as nested route
       },
     ],
