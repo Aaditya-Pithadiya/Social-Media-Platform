@@ -7,6 +7,8 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
 import Profile from './components/Profile';
+import EditProfile from './components/EditProfile';
+
 
 // Configure routes
 const browserRouter = createBrowserRouter([
@@ -21,6 +23,10 @@ const browserRouter = createBrowserRouter([
       {
         path: "/profile/:id",
         element: <Profile />, // Profile component as nested route
+      },
+      {
+        path:'/account/edit',
+        element: <EditProfile/>
       },
     ],
   },
