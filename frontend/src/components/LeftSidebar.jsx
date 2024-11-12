@@ -92,11 +92,20 @@ const LeftSidebar = () => {
         toast.error(error.response.data.message);
     }
 }
-
-  // const createPostHandler = () =>{
-    
-    
-  // }
+const sidebarHandler = (textType) => {
+  if (textType === 'Logout') {
+      logoutHandler();
+  } else if (textType === "Create") {
+      setOpen(true);
+  } else if (textType === "Profile") {
+      navigate(`/profile/${user?._id}`);
+  } else if (textType === "Home") {
+      navigate("/");
+  } else if (textType === 'Messages') {
+      navigate("/chat");
+  }
+}
+  
 
   return (
     <div>
@@ -141,8 +150,10 @@ const LeftSidebar = () => {
             {sidebarItems.map((item, index) => (
               <button
                 key={index}
-                onClick={() =>{ if(item.text === "Logout"){ logoutHandler()}
-                else if(item.text==="Create"){setOpen(true);} else setActiveItem(item.text)}}
+                onClick={() => { 
+                  sidebarHandler(item.text);
+                  setActiveItem(item.text);   
+                }}
                 className={`flex items-center gap-4 p-3 rounded-lg transition-all duration-300
                   ${activeItem === item.text 
                     ? 'bg-gradient-to-r from-purple-500 to-purple-600 text-white shadow-lg shadow-purple-200'

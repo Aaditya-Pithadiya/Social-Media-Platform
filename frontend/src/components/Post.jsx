@@ -10,16 +10,19 @@ import CommentDialog from './CommentDialog';
 import axios from 'axios'
 import { toast } from 'sonner'
 import { setPosts, setSelectedPost } from '../redux/postSlice'
+import { useNavigate } from 'react-router-dom';
+
 
 const Post = ({ post }) => {
     const [text, setText] = useState("");
     const [open, setOpen] = useState(false);
-     const { user } = useSelector(store => store.auth);
-     const { posts } = useSelector(store => store.post);
+    const { user } = useSelector(store => store.auth);
+    const { posts } = useSelector(store => store.post);
     const [liked, setLiked] = useState(post.likes.includes(user?._id) || false);
     const [postLike, setPostLike] = useState(post.likes.length);
-     const [comment, setComment] = useState(post.comments);
+    const [comment, setComment] = useState(post.comments);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const changeEventHandler = (e) => {
         const inputText = e.target.value;
@@ -29,6 +32,12 @@ const Post = ({ post }) => {
             setText("");
         }
     }
+
+    // Navigate to user profile on username click
+    const navigateToUserProfile = (userId) => {
+        navigate(`/profile/${user?._id}`); // Update the route as per app's route structure
+    };
+
     const likeOrDislikeHandler = async () => {
         try {
             const action = liked ? 'dislike' : 'like';
@@ -102,7 +111,7 @@ const Post = ({ post }) => {
                         <AvatarFallback> CN</AvatarFallback>
                     </Avatar>
                     { <div className="flex items-center gap-3">
-                        <h1 className="font-medium text-purple-900">{post.author?.username}</h1>
+                        <h1 onClick={() => navigateToUserProfile(post.author._id)} className="font-medium text-purple-900 cursor-pointer">{post.author?.username}</h1>
                         {user?._id === post.author._id && 
                             <Badge className="bg-purple-200 text-purple-700 hover:bg-purple-300">
                                 Author
