@@ -7,6 +7,8 @@ const userSchema = new mongoose.Schema({
     profilePicture:{type:String,default:''},
     bio:{type:String, default:''},
     gender:{type:String,enum:['male','female']},
+    isVerified:{type:Boolean,default:false},
+    verificationCode:{type:String},
 
     followers:[{type:mongoose.Schema.Types.ObjectId, ref:'User'}],
     following:[{type:mongoose.Schema.Types.ObjectId, ref:'User'}],
