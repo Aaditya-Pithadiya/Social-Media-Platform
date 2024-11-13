@@ -6,7 +6,7 @@ const authSlice = createSlice({
         user:null,
         suggestedUsers:[],
         userProfile:null,
-        electedUser:null,
+        selectedUser:null,
     },
     reducers:{
         // actions
@@ -27,7 +27,7 @@ const authSlice = createSlice({
 export const {
     setAuthUser, 
     setSuggestedUsers, 
-     setUserProfile,
+    setUserProfile,
     setSelectedUser,
 } = authSlice.actions;
 export default authSlice.reducer;
