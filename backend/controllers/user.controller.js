@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import getDataUri from "../utils/datauri.js";
 import cloudinary from "../utils/cloudinary.js";
 import { Post } from "../models/post.model.js";
-
+import { SendVerificationCode, welcomeEmail } from '../middlewares/Email.js'
 
 export const register = async (req, res) => {
     try {
@@ -15,19 +15,25 @@ export const register = async (req, res) => {
                 success: false,
             });
         }
-        const user = await User.findOne({ email });
-        if (user) {
+        const ExistUser = await User.findOne({ email });
+        if (ExistUser) {
             return res.status(401).json({
                 message: "Try different email",
                 success: false,
             });
         };
         const hashedPassword = await bcrypt.hash(password, 15);
-        await User.create({
-            username,
+        const verificationCode = Math.floor(100000 + Math.random()*900000).toString()
+        const user = new User({
             email,
-            password: hashedPassword
-        });
+            password : hashedPassword,
+            username,
+            verificationCode
+        })
+
+        await user.save()
+        SendVerificationCode(user.email,verificationCode)
+
         return res.status(201).json({
             message: "Account created successfully.",
             success: true,
@@ -36,6 +42,36 @@ export const register = async (req, res) => {
         console.log(error);
     }
 }
+
+export const Verifyemail = async (req, res) => {
+    try {
+        const { email, code } = req.body;
+
+        if (!email || !code) {
+            return res.status(400).json({ success: false, message: "Email and code are required" });
+        }
+
+        // Find user by email and verification code
+        const user = await User.findOne({ email, verificationCode: code });
+
+        if (!user) {
+            // If no user is found with the given email and code, delete the unverified user with that email
+            await User.deleteOne({ email, isVerified: false });
+            return res.status(400).json({ success: false, message: "Invalid or expired code. User removed from database." });
+        }
+
+        // If the code is correct, verify the user
+        user.isVerified = true;
+        user.verificationCode = undefined; // Clear the verification code after successful verification
+        await user.save();
+        await welcomeEmail(user.email, user.name);
+
+        return res.status(200).json({ success: true, message: "Email verified!" });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: "Server error" });
+    }
+};
 
 export const login = async (req, res) => {
     try {
