@@ -4,7 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { setSelectedUser } from '../redux/authSlice';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
-import { MessageCircleCode } from 'lucide-react';
+import { MessageCircle } from 'lucide-react';
 import Messages from "./Messages";
 
 
@@ -51,7 +51,7 @@ const ChatPage = () => {
                                 <span>{selectedUser?.username}</span>
                             </div>
                         </div>
-                        <Messages selectedUser={selectedUser} />
+                        <Messages  />
                         <div className='flex items-center p-4 border-t border-t-gray-300'>
                             <Input type="text" className='flex-1 mr-2 focus-visible:ring-transparent' placeholder="Messages..." />
                             <Button>Send</Button>
@@ -59,7 +59,7 @@ const ChatPage = () => {
                     </section>
                 ) : (
                     <div className='flex flex-col items-center justify-center mx-auto'>
-                        <MessageCircleCode className='w-32 h-32 my-4' />
+                        <MessageCircle className='w-32 h-32 my-4' />
                         <h1 className='font-medium text-xl'>Your messages</h1>
                         <span>Send a message to start a chat.</span>
                     </div>
