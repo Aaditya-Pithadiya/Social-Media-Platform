@@ -11,6 +11,9 @@ import { useNavigate } from "react-router-dom";
 import axios from 'axios';  
 import { useDispatch, useSelector } from 'react-redux';
 import { setAuthUser } from '../redux/authSlice';
+import ForgotPasswordDialog from "./ForgotPassword.jsx";
+import OTPVerificationDialog from "./OTPVerification.jsx";
+import ResetPasswordDialog from "./ResetPassword.jsx";
 
 const AuthForm = () => {
   const [isLoginActive, setIsLoginActive] = useState(true);
@@ -19,7 +22,11 @@ const AuthForm = () => {
   const [username, setUsername] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const [forgotPasswordOpen, setForgotPasswordOpen] = useState(false);
+  const [otpVerificationOpen, setOtpVerificationOpen] = useState(false);
+  const [resetPasswordOpen, setResetPasswordOpen] = useState(false);
   const navigate = useNavigate();
+  
   const [loading,setLoading]=useState(false);
   const dispatch = useDispatch();
   useEffect(() => {
@@ -84,10 +91,23 @@ const AuthForm = () => {
     }
 };
 
-  const handleForgotPassword = () => {
-    // Logic for handling "Forgot Password"
-    alert("Forgot Password feature is not implemented yet.");  
-  };
+const handleForgotPassword = () => {
+  setForgotPasswordOpen(true);
+};
+
+// Function to handle email submission from Forgot Password Dialog
+const handleSubmitEmail = (email) => {
+  setEmail(email); // Store email to pass to OTP Verification Dialog
+  setOtpVerificationOpen(true); // Open OTP Verification Dialog
+  setForgotPasswordOpen(false); // Close Forgot Password Dialog
+};
+
+// Function to handle OTP submission from OTP Verification Dialog
+const handleSubmitOTP = (otp) => {
+  // You can validate the OTP here, and if valid, open the Reset Password Dialog
+  setResetPasswordOpen(true); // Open Reset Password Dialog after OTP verification
+  setOtpVerificationOpen(false); // Close OTP Verification Dialog
+};
 
   return (
     <div
@@ -132,7 +152,7 @@ const AuthForm = () => {
                 Remember me
               </div>
               <div className="flex justify-between mb-4 text-white text-sm">
-                <a href="#" className="text-purple-400" onClick={handleForgotPassword}>
+                <a className="text-purple-400 cursor-pointer" onClick={handleForgotPassword}>
                   Forgot Password?
                 </a>
               </div>
@@ -194,7 +214,11 @@ const AuthForm = () => {
             </form>
           </div>
         )}
+       
       </div>
+      <ForgotPasswordDialog open={forgotPasswordOpen} setOpen={setForgotPasswordOpen} onSubmitEmail={handleSubmitEmail} />
+      <OTPVerificationDialog open={otpVerificationOpen} setOpen={setOtpVerificationOpen} email={email} onSubmitOTP={handleSubmitOTP} />
+      <ResetPasswordDialog open={resetPasswordOpen} setOpen={setResetPasswordOpen} />
     </div>
   );
 };

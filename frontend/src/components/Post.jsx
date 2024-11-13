@@ -35,7 +35,7 @@ const Post = ({ post }) => {
 
     // Navigate to user profile on username click
     const navigateToUserProfile = (userId) => {
-        navigate(`/profile/${user?._id}`); // Update the route as per app's route structure
+        navigate(`/profile/${post.author._id}`); // Update the route as per app's route structure
     };
 
     const likeOrDislikeHandler = async () => {
