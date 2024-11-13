@@ -45,14 +45,16 @@ export const register = async (req, res) => {
 
 export const Verifyemail = async (req, res) => {
     try {
-        const { email, code } = req.body;
+        const { email, otp } = req.body;
 
-        if (!email || !code) {
+        console.log(otp);
+
+        if (!email || !otp) {
             return res.status(400).json({ success: false, message: "Email and code are required" });
         }
 
         // Find user by email and verification code
-        const user = await User.findOne({ email, verificationCode: code });
+        const user = await User.findOne({ email, verificationCode: otp });
 
         if (!user) {
             // If no user is found with the given email and code, delete the unverified user with that email
