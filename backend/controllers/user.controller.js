@@ -76,6 +76,80 @@ export const Verifyemail = async (req, res) => {
     }
 };
 
+
+export const forgotpassword = async(req,res)=>{
+    try{
+           const {email} = req.body;
+
+           if(!email){
+            return res.status(400).json({ success: false, message: "Email are required" }); 
+           }
+           const user = await User.findOne({email});
+
+           if(!user){
+            return res.status(400).json({ success: false, message: "No user exist" });
+            
+           }
+
+           if(!user.isVerified){
+            return res.status(400).json({ success: false, message: "Email has not verified" });
+           }
+           
+           user.verificationCode = Math.floor(100000 + Math.random()*900000).toString();
+           console.log(user.verificationCode);
+           await user.save();
+           await SendVerificationCode(user.email,user.verificationCode);
+
+           return res.status(200).json({success:true,message:"otp sent!"})
+    }
+    catch(error){
+        console.log(error);
+        res.status(500).json({ success: false, message: "Server error" });
+    }
+}
+
+export const Verifyotp = async (req, res) => {
+    try {
+        const { email, code ,password,confirmPassword} = req.body;
+
+        if (!email || !code || !password || !confirmPassword) {
+            return res.status(400).json({ success: false, message: "Email and code are required" });
+        }
+
+        // Find user by email and verification code
+        const user = await User.findOne({ email, verificationCode: code });
+
+        if (!user) {
+            return res.status(400).json({ success: false, message: "Invalid or expired code." });
+        }
+
+        if (!user.isVerified) {
+            return res.status(400).send({ success: false, message: "Your email is not verified" });
+        }
+
+        if (password !== confirmPassword) {
+            return res.status(400).send("Passwords do not match.");
+        }
+
+        user.verificationCode = undefined; // Clear the verification code after successful verification
+        await user.save();
+
+        const hashPassword = await bcrypt.hash(confirmPassword,10)
+
+        await User.updateOne({ email }, { password:  hashPassword});
+
+        //checking
+        const Userchk = await User.findOne({ email });
+        console.log(Userchk.password);
+       
+        return res.status(200).json({success:true,message:"Password Changed succesfully"})
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: "Server error" });
+    }
+};
+
 export const login = async (req, res) => {
     try {
         const { email, password } = req.body;
