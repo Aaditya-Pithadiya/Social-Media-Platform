@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Dialog, DialogContent, DialogTrigger } from './ui/dialog';
 import { Bookmark, MessageCircle, MoreHorizontal, Send } from 'lucide-react';
@@ -11,18 +11,29 @@ import axios from 'axios';
 import { toast } from 'sonner';
 import { setPosts, setSelectedPost } from '../redux/postSlice';
 import { useNavigate } from 'react-router-dom';
-
+import useGetUserProfile from '../hooks/useGetUserProfile';
+//import { Link, useParams } from 'react-router-dom';
 const Post = ({ post }) => {
     const [text, setText] = useState("");
     const [open, setOpen] = useState(false);
-    const { user } = useSelector(store => store.auth);
+    //const { user } = useSelector(store => store.auth);
+    const { userProfile: globalUserProfile, user } = useSelector(store => store.auth);
+    const [userProfile, setUserProfile] = useState(globalUserProfile);
     const { posts } = useSelector(store => store.post);
     const [liked, setLiked] = useState(post.likes.includes(user?._id) || false);
     const [postLike, setPostLike] = useState(post.likes.length);
     const [comment, setComment] = useState(post.comments);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    useGetUserProfile(user?._id);
 
+
+    const [isFollowing, setIsFollowing] = useState(
+        userProfile?.following.includes(post.author?._id) // Check if the logged-in user is already following the profile
+    );
+    useEffect(() => {
+        setUserProfile(globalUserProfile);
+    }, [globalUserProfile]);
     const changeEventHandler = (e) => {
         setText(e.target.value.trim());
     };
@@ -89,7 +100,25 @@ const Post = ({ post }) => {
             console.error(error);
         }
     };
-
+    const handleFollowToggle = async () => {
+        try {
+          // Replace with your API endpoint for following/unfollowing
+          const response = await axios.post(`http://localhost:8000/api/v1/user/followorunfollow/${post.author?._id}`,{}, { withCredentials: true });
+          
+          if (response.data.success) {
+            setIsFollowing(!isFollowing); // Toggle follow/unfollow status
+            setUserProfile(prevProfile => ({
+              ...prevProfile,
+              followers: isFollowing
+                ? prevProfile.followers.filter(followerId => followerId !== user?._id)
+                : [...prevProfile.followers, user?._id]
+            }));
+            dispatch(setUserProfile());
+          }
+        } catch (error) {
+          console.error('Error following/unfollowing user:', error);
+        }
+      };
     return (
         <div className="my-8 w-full max-w-sm mx-auto bg-purple-50 rounded-lg shadow-md p-4">
             <div className="flex items-center justify-between mb-4">
@@ -114,8 +143,8 @@ const Post = ({ post }) => {
                         <MoreHorizontal className="cursor-pointer text-purple-600 hover:text-purple-800" />
                     </DialogTrigger>
                     <DialogContent className="flex flex-col items-center text-sm text-center bg-purple-50">
-                        <Button variant="ghost" className="cursor-pointer w-fit text-purple-700 font-bold hover:bg-purple-100">
-                            Unfollow
+                        <Button variant="ghost" className="cursor-pointer w-fit text-purple-700 font-bold hover:bg-purple-100" onClick={handleFollowToggle}>
+                            {isFollowing ? 'Unfollow' : 'Follow'}
                         </Button>
                         <Button variant="ghost" className="cursor-pointer w-fit text-purple-700 hover:bg-purple-100">
                             Add to favorites
