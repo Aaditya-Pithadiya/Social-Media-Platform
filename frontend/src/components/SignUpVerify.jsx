@@ -3,8 +3,7 @@ import { Dialog, DialogContent, DialogTitle } from './ui/dialog';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
-
+ 
 const SignUpVerifyDialog = ({ open, setOpen, onSubmitEmail }) => {
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");

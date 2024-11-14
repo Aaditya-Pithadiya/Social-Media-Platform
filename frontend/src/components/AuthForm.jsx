@@ -75,7 +75,7 @@ const AuthForm = () => {
         headers: { 'Content-Type': 'application/json' },
         withCredentials: true
       });
-      setSignupVerifyOpen(true); 
+      setSignupVerifyOpen(true);
       toast.success("Please verify your email.");
     } catch (error) {
       toast.error(error.response?.data?.message || "An error occurred.");
@@ -86,8 +86,12 @@ const AuthForm = () => {
 
   const handleOtpVerified = () => {
     setSignupVerifyOpen(false); // Close OTP dialog
-    navigate("/"); // Navigate to home page on successful OTP verification
-    toast.success("Registration and verification successful!");
+    setIsLoginActive(true);
+    navigate("/login");
+    setEmail("");
+    setPassword("");
+    setUsername(""); 
+    toast.success("Registration and verification successful! Please log in...");
   };
 
   
