@@ -44,12 +44,12 @@ const SuggestedUsers = () => {
                             </span>
                         </div>
                     </div>
-                    <button 
+                    {/* <button 
                         className="text-purple-600 text-xs font-bold cursor-pointer hover:text-purple-800 
                                  bg-purple-100 px-4 py-1 rounded-full hover:bg-purple-200 transition-colors"
                     >
                         Follow
-                    </button>
+                    </button> */}
                 </div>
             ))}
         </div>

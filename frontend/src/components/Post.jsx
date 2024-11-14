@@ -107,12 +107,12 @@ const Post = ({ post }) => {
             <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
                     <Avatar className="border-2 border-purple-300">
-                        <AvatarImage src={post.author.profilePicture} alt="post_image" />
+                        <AvatarImage src={post.author?.profilePicture} alt="post_image" />
                         <AvatarFallback> CN</AvatarFallback>
                     </Avatar>
                     { <div className="flex items-center gap-3">
-                        <h1 onClick={() => navigateToUserProfile(post.author._id)} className="font-medium text-purple-900 cursor-pointer">{post.author?.username}</h1>
-                        {user?._id === post.author._id && 
+                        <h1 onClick={() => navigateToUserProfile(post.author?._id)} className="font-medium text-purple-900 cursor-pointer">{post.author?.username}</h1>
+                        {user?._id === post.author?._id && 
                             <Badge className="bg-purple-200 text-purple-700 hover:bg-purple-300">
                                 Author
                             </Badge>
@@ -136,7 +136,7 @@ const Post = ({ post }) => {
                             Add to favorites
                         </Button>
                          {
-                            user&&user?._id===post?.author._id&& 
+                            user&&user?._id===post?.author?._id&& 
                             <Button onClick={deletePostHandler} variant="ghost" 
                             className="cursor-pointer w-fit text-red-600 hover:bg-red-50">
                             Delete
