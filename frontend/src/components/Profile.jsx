@@ -8,21 +8,19 @@ import axios from 'axios';
 import { AtSign, Heart, MessageCircle } from 'lucide-react';
 
 const Profile = () => {
-  
   const { id: userId } = useParams();
-  useGetUserProfile(userId);;
-  
+  useGetUserProfile(userId);
+
   const { userProfile: globalUserProfile, user } = useSelector(store => store.auth);
   const [userProfile, setUserProfile] = useState(globalUserProfile);
-  
+
   const isLoggedInUserProfile = user?._id === globalUserProfile?._id;
   const [activeTab, setActiveTab] = useState('posts');
-  
   const [isFollowing, setIsFollowing] = useState(
-    userProfile?.followers.includes(user?._id) // Check if the logged-in user is already following the profile
+    userProfile?.followers.includes(user?._id)
   );
+
   useEffect(() => {
-   
     setUserProfile(globalUserProfile);
     setIsFollowing(globalUserProfile?.followers.includes(user?._id));
   }, [globalUserProfile, user]);
@@ -33,11 +31,14 @@ const Profile = () => {
 
   const handleFollowToggle = async () => {
     try {
-      // Replace with your API endpoint for following/unfollowing
-      const response = await axios.post(`http://localhost:8000/api/v1/user/followorunfollow/${userId}`,{}, { withCredentials: true });
-      
+      const response = await axios.post(
+        `http://localhost:8000/api/v1/user/followorunfollow/${userId}`,
+        {},
+        { withCredentials: true }
+      );
+
       if (response.data.success) {
-        setIsFollowing(!isFollowing); // Toggle follow/unfollow status
+        setIsFollowing(!isFollowing);
         setUserProfile(prevProfile => ({
           ...prevProfile,
           followers: isFollowing
@@ -50,7 +51,7 @@ const Profile = () => {
     }
   };
 
-  const displayedPost = activeTab === 'posts' ? userProfile?.posts : userProfile?.bookmarks;
+  const displayedPosts = activeTab === 'posts' ? userProfile?.posts : userProfile?.bookmarks;
 
   return (
     <div className='flex max-w-5xl justify-center mx-auto'>
@@ -99,6 +100,7 @@ const Profile = () => {
             </div>
           </section>
         </div>
+
         <div className='border-t border-gray-200'>
           <div className='flex items-center justify-center gap-6 text-sm'>
             <span 
@@ -122,8 +124,9 @@ const Profile = () => {
               SAVED
             </span>
           </div>
+
           <div className='grid grid-cols-3 gap-1'>
-            {displayedPost?.map((post) => (
+            {displayedPosts?.map((post) => (
               <div key={post?._id} className='relative group cursor-pointer'>
                 <img 
                   src={post.image} 

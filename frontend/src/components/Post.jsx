@@ -3,7 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Dialog, DialogContent, DialogTrigger } from './ui/dialog';
 import { Bookmark, MessageCircle, MoreHorizontal, Send } from 'lucide-react';
 import { Button } from './ui/button';
-import { FaHeart, FaRegHeart } from "react-icons/fa";
+import { FaHeart, FaRegHeart , FaBookmark, FaRegBookmark} from "react-icons/fa";
 import CommentDialog from './CommentDialog';
 import { useDispatch, useSelector } from 'react-redux';
 import { Badge } from './ui/badge';
@@ -31,6 +31,7 @@ const Post = ({ post }) => {
     const [isFollowing, setIsFollowing] = useState(
         userProfile?.following.includes(post.author?._id) // Check if the logged-in user is already following the profile
     );
+    const [isBookmarked, setIsBookmarked] = useState(userProfile?.bookmarks.includes(post._id));
     useEffect(() => {
         setUserProfile(globalUserProfile);
     }, [globalUserProfile]);
@@ -40,6 +41,29 @@ const Post = ({ post }) => {
 
     const navigateToUserProfile = (userId) => {
         navigate(`/profile/${userId}`);
+    };
+
+
+    const bookmarkHandler = async () => {
+        try {
+            const res = await axios.get(`http://localhost:8000/api/v1/post/${post._id}/bookmark`, {
+                withCredentials: true
+            });
+            if (res.data.success) {
+                setIsBookmarked(!isBookmarked);
+                toast.success(res.data.message);
+                // Update user profile to reflect the bookmark change
+                setUserProfile(prevProfile => ({
+                    ...prevProfile,
+                    bookmarks: isBookmarked 
+                        ? prevProfile.bookmarks.filter(bookmarkId => bookmarkId !== post._id)
+                        : [...prevProfile.bookmarks, post._id]
+                }));
+            }
+        } catch (error) {
+            console.error("Error bookmarking post:", error);
+            toast.error("Could not bookmark the post");
+        }
     };
 
     const likeOrDislikeHandler = async () => {
@@ -173,7 +197,23 @@ const Post = ({ post }) => {
                     }} className="cursor-pointer text-purple-600 hover:text-purple-700" />
                     <Send className="cursor-pointer text-purple-600 hover:text-purple-700" />
                 </div>
-                <Bookmark className="cursor-pointer text-purple-600 hover:text-purple-700" />
+                <div className="flex items-center justify-between my-4">
+                {/* Other icons like Like, Comment */}
+                {isBookmarked ? (
+                    <FaBookmark 
+                        onClick={bookmarkHandler} 
+                        className="cursor-pointer text-purple-700"
+                        size={22}
+                    />
+                ) : (
+                    <FaRegBookmark 
+                        onClick={bookmarkHandler} 
+                        className="cursor-pointer text-purple-600 hover:text-purple-700"
+                        size={22}
+                    />
+                )}
+            </div>
+
             </div>
 
             <span className="font-medium text-purple-900 block mb-2">
