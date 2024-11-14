@@ -21,7 +21,8 @@ const OTPVerificationDialog = ({ open, setOpen}) => {
     }
 console.log(email,otp,password,confirmPassword);
     try {
-      const res = await axios.post('http://localhost:8000/api/v1/user/verfiyUpdate', { email, otp, password, confirmPassword });
+      const res = await axios.post('http://localhost:8000/api/v1/user/verifyUpdate', { 
+        email:email, otp:otp, password:password, confirmPassword:confirmPassword });
       console.log(email,otp,password,confirmPassword);
       if (res.data.success) {
         toast.success("Password reset successful.");
