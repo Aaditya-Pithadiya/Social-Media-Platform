@@ -14,6 +14,7 @@ import { setAuthUser } from '../redux/authSlice';
 import ForgotPasswordDialog from "./ForgotPassword.jsx";
 import OTPVerificationDialog from "./OTPVerification.jsx";
 import ResetPasswordDialog from "./ResetPassword.jsx";
+import SignUpVerifyDialog from "./SignUpVerify";
 
 const AuthForm = () => {
   const [isLoginActive, setIsLoginActive] = useState(true);
@@ -22,6 +23,7 @@ const AuthForm = () => {
   const [username, setUsername] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const [signupVerifyOpen, setSignupVerifyOpen] = useState(false);
   const [forgotPasswordOpen, setForgotPasswordOpen] = useState(false);
   const [otpVerificationOpen, setOtpVerificationOpen] = useState(false);
   const [resetPasswordOpen, setResetPasswordOpen] = useState(false);
@@ -67,30 +69,28 @@ const AuthForm = () => {
   const handleSignupSubmit = async (e) => {
     e.preventDefault();
     try {
-        setLoading(true);
-        const input = { username, email, password }; 
-        const res = await axios.post('http://localhost:8000/api/v1/user/register', input, {
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            withCredentials: true
-        });
-        if (res.data.success) {
-            navigate("/");
-            toast.success(res.data.message);
-            setUsername("");
-            setEmail("");
-            setPassword("");
-        }
-    }catch (error) {
-      console.log(error);
-      const errorMessage = error.response?.data?.message || "An error occurred.";
-      toast.error(errorMessage);
-  } finally {
-        setLoading(false);
+      setLoading(true);
+      const input = { username, email, password };
+      const res = await axios.post('http://localhost:8000/api/v1/user/register', input, {
+        headers: { 'Content-Type': 'application/json' },
+        withCredentials: true
+      });
+      setSignupVerifyOpen(true); 
+      toast.success("Please verify your email.");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "An error occurred.");
+    } finally {
+      setLoading(false);
     }
-};
+  };
 
+  const handleOtpVerified = () => {
+    setSignupVerifyOpen(false); // Close OTP dialog
+    navigate("/"); // Navigate to home page on successful OTP verification
+    toast.success("Registration and verification successful!");
+  };
+
+  
 const handleForgotPassword = () => {
   setForgotPasswordOpen(true);
 };
@@ -116,10 +116,7 @@ const handleSubmitOTP = (otp) => {
     >
       <header className="fixed top-0 left-0 w-full p-4 flex justify-between items-center z-10">
         <img src={logo2} alt="Logo" className="h-20 w-30 " />
-        <nav className="flex space-x-6">
-        <a href="#" className="nav-link text-gray">Services</a>
-        <a href="#" className="nav-link text-gray">FAQ</a>
-        </nav>
+
       </header>
       <div className="wrapper bg-gray-800 bg-opacity-120 rounded-xl shadow-lg p-8">
         {isLoginActive ? (
@@ -142,15 +139,7 @@ const handleSubmitOTP = (otp) => {
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
-              <div className="flex items-center mb-4 text-white text-sm">
-              <input
-                  type="checkbox"
-                  className="mr-2"
-                  checked={rememberMe} // Use the state variable
-                  onChange={() => setRememberMe(!rememberMe)} // Toggle the state
-              />
-                Remember me
-              </div>
+      
               <div className="flex justify-between mb-4 text-white text-sm">
                 <a className="text-purple-400 cursor-pointer" onClick={handleForgotPassword}>
                   Forgot Password?
@@ -219,6 +208,7 @@ const handleSubmitOTP = (otp) => {
       <ForgotPasswordDialog open={forgotPasswordOpen} setOpen={setForgotPasswordOpen} onSubmitEmail={handleSubmitEmail} />
       <OTPVerificationDialog open={otpVerificationOpen} setOpen={setOtpVerificationOpen} email={email} onSubmitOTP={handleSubmitOTP} />
       <ResetPasswordDialog open={resetPasswordOpen} setOpen={setResetPasswordOpen} />
+      <SignUpVerifyDialog open={signupVerifyOpen} setOpen={setSignupVerifyOpen} onSubmitEmail={handleOtpVerified} />
     </div>
   );
 };

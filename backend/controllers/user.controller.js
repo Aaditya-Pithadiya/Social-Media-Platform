@@ -37,6 +37,7 @@ export const register = async (req, res) => {
         return res.status(201).json({
             message: "Account created successfully.",
             success: true,
+            user
         });
     } catch (error) {
         console.log(error);
@@ -249,3 +250,24 @@ export const followOrUnfollow = async (req, res) => {
         console.log(error);
     }
 }
+
+
+
+export const searchUsers = async (req, res) => {
+    try {
+      const { query } = req.query;
+  
+      if (!query) {
+        return res.status(400).json({ success: false, message: "Search query is required" });
+      }
+  
+      const users = await User.find({
+        username: { $regex: `^${query}`, $options: 'i' }
+      }).select('username profilePicture');
+  
+      res.status(200).json({ success: true, users });
+    } catch (error) {
+      res.status(500).json({ success: false, message: "Error searching users" });
+    }
+  };
+  
