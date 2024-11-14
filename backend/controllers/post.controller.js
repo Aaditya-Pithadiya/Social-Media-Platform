@@ -45,24 +45,37 @@ export const addNewPost = async (req, res) => {
 
 export const getAllPost = async (req, res) => {
     try {
-        const posts = await Post.find().sort({ createdAt: -1 })
-            .populate({ path: 'author', select: 'username profilePicture' })
-            .populate({
-                path: 'comments',
-                sort: { createdAt: -1 },
-                populate: {
-                    path: 'author',
-                    select: 'username profilePicture'
-                }
-            });
+        const userId = req.id;
+        const user = await User.findById(userId).select('following'); // Get the following list of the user
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found', success: false });
+        }
+
+        const posts = await Post.find({
+            author: { $in: [...user.following, userId] } // Fetch posts from followed users and self
+        })
+        .sort({ createdAt: -1 })
+        .populate({ path: 'author', select: 'username profilePicture' })
+        .populate({
+            path: 'comments',
+            sort: { createdAt: -1 },
+            populate: {
+                path: 'author',
+                select: 'username profilePicture'
+            }
+        });
+
         return res.status(200).json({
             posts,
             success: true
-        })
+        });
     } catch (error) {
         console.log(error);
+        return res.status(500).json({ message: 'Error retrieving posts', success: false });
     }
 };
+
 
 export const getUserPost = async (req, res) => {
     try {

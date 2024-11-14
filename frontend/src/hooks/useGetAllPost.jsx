@@ -1,24 +1,28 @@
-import { setPosts } from "../redux/postSlice";
-import axios from "axios";
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import axios from 'axios';
+import { setPosts } from '../redux/postSlice';
 
 const useGetAllPost = () => {
     const dispatch = useDispatch();
+
     useEffect(() => {
-        const fetchAllPost = async () => {
+        const fetchPosts = async () => {
             try {
-                const res = await axios.get('http://localhost:8000/api/v1/post/all', { withCredentials: true });
-                if (res.data.success) { 
-                    console.log(res.data.posts);
-                    dispatch(setPosts(res.data.posts));
+                const response = await axios.get('http://localhost:8000/api/v1/post/all', {
+                    withCredentials: true
+                });
+
+                if (response.data.success) {
+                    dispatch(setPosts(response.data.posts));
                 }
             } catch (error) {
-                console.log(error);
+                console.error('Error fetching posts:', error);
             }
-        }
-        fetchAllPost();
-    }, []);
+        };
+
+        fetchPosts();
+    }, [dispatch]);
 };
+
 export default useGetAllPost;
