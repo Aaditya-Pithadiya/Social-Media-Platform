@@ -65,6 +65,7 @@ export const Verifyemail = async (req, res) => {
 
         // If the code is correct, verify the user
         user.isVerified = true;
+        user.verificationExpires=null;
         user.verificationCode = undefined; // Clear the verification code after successful verification
         await user.save();
         await welcomeEmail(user.email, user.name);
@@ -122,7 +123,7 @@ export const login = async (req, res) => {
             following: user.following,
             posts: user.posts
         }
-        return res.cookie('token', token, { httpOnly: true, sameSite: 'strict', maxAge: 1 * 24 * 60 * 60 * 1000 }).json({
+        return res.cookie('token', token, { httpOnly: true, sameSite: 'strict', maxAge: 1 }).json({
             message: `Welcome back ${user.username}`,
             success: true,
             user

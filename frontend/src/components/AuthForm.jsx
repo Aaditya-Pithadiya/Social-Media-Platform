@@ -208,7 +208,7 @@ const handleSubmitOTP = (otp) => {
       <ForgotPasswordDialog open={forgotPasswordOpen} setOpen={setForgotPasswordOpen} onSubmitEmail={handleSubmitEmail} />
       <OTPVerificationDialog open={otpVerificationOpen} setOpen={setOtpVerificationOpen} email={email} onSubmitOTP={handleSubmitOTP} />
       <ResetPasswordDialog open={resetPasswordOpen} setOpen={setResetPasswordOpen} />
-      <SignUpVerifyDialog open={signupVerifyOpen} setOpen={setSignupVerifyOpen} onSubmitEmail={handleOtpVerified} />
+      <SignUpVerifyDialog open={signupVerifyOpen} setOpen={setSignupVerifyOpen} onSubmitEmail={handleOtpVerified} email={email}/>
     </div>
   );
 };

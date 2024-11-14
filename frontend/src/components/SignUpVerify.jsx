@@ -5,8 +5,8 @@ import { Input } from './ui/input';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 
-const SignUpVerifyDialog = ({ open, setOpen, onSubmitEmail }) => {
-  const [email, setEmail] = useState("");
+const SignUpVerifyDialog = ({ open, setOpen, onSubmitEmail,email}) => {
+  //const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -58,10 +58,10 @@ const SignUpVerifyDialog = ({ open, setOpen, onSubmitEmail }) => {
       <DialogContent onInteractOutside={() => setOpen(false)} className="w-full max-w-md p-6 bg-white rounded-lg shadow-lg mx-auto mt-10">
         <DialogTitle className="text-center text-2xl font-semibold text-gray-800 mb-4">Email Verification</DialogTitle>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
+          {/* <div>
             <label className="block text-sm font-medium text-gray-700 mb-3">Email Address</label>
             <Input type="email" placeholder="Enter your Gmail" value={email} onChange={(e) => setEmail(e.target.value)} required />
-          </div>
+          </div> */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-3">OTP</label>
             <Input type="text" placeholder="Enter OTP sent to your email" value={otp} onChange={(e) => setOtp(e.target.value)} required />
