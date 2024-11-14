@@ -1,7 +1,6 @@
 import { 
   AiOutlineHome, 
   AiOutlineSearch, 
-  AiOutlineCompass, 
   AiOutlineMessage, 
   AiOutlineHeart, 
   AiOutlinePlusSquare, 
@@ -51,7 +50,6 @@ const LeftSidebar = () => {
   const sidebarItems = [
     { icon: <AiOutlineHome className="w-6 h-6" />, text: "Home" },
     { icon: <AiOutlineSearch className="w-6 h-6" />, text: "Search" },
-    { icon: <AiOutlineCompass className="w-6 h-6" />, text: "Explore" },
     { icon: <AiOutlineMessage className="w-6 h-6" />, text: "Messages" },
     { icon: <AiOutlineHeart className="w-6 h-6" />, text: "Notifications" },
     { icon: <AiOutlinePlusSquare className="w-6 h-6" />, text: "Create" },

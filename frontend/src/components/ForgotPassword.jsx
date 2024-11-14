@@ -1,40 +1,37 @@
+// ForgotPasswordDialog.js
 import React, { useState } from "react";
-import { Dialog, DialogContent, DialogTitle } from './ui/dialog'; 
-import { Button } from './ui/button'; 
-import { Input } from './ui/input'; 
+import { Dialog, DialogContent, DialogTitle } from './ui/dialog';
+import { Button } from './ui/button';
+import { Input } from './ui/input';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import OTPVerificationDialog from "./OTPVerification.jsx";
 
-const ForgotPasswordDialog = ({ open, setOpen, onSubmitEmail }) => {
+const ForgotPasswordDialog = ({ open, setOpen, setOtpVerificationOpen }) => {
   const [email, setEmail] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmitEmail(email); // Trigger OTP dialog after email submission
-    setOpen(false); // Close the Forgot Password dialog
+    try {
+      await axios.post('http://localhost:8000/api/v1/user/sendotp', { email });
+      toast.success("OTP sent to your email.");
+      setOpen(false); // Close Forgot Password Dialog
+      setOtpVerificationOpen(true); // Open OTP Verification Dialog
+    } catch (error) {
+      toast.error("Failed to send OTP.");
+    }
   };
 
   return (
     <Dialog open={open} onClose={() => setOpen(false)}>
-      <DialogContent onInteractOutside={() => setOpen(false)} className="w-full max-w-md p-6 bg-white rounded-lg shadow-lg mx-auto mt-10">
-        <DialogTitle className="text-center text-2xl font-semibold text-gray-800 mb-4">Forgot Password</DialogTitle>
+      <DialogContent onInteractOutside={() => setOpen(false)} className="max-w-md p-6 bg-white rounded-lg shadow-lg">
+        <DialogTitle className="text-center text-2xl font-semibold">Forgot Password</DialogTitle>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-3">Email Address</label>
-            <Input
-              type="email"
-              placeholder="Enter your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm"
-            />
-          </div>
-          <Button 
-            type="submit" 
-            className="w-full bg-purple-600 text-white font-medium py-2 rounded-md hover:bg-purple-700 transition duration-150"
-          >
-            Send OTP
-          </Button>
+          <Input type="email" placeholder="Enter your email" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <Button type="submit" className="w-full bg-purple-600 text-white">Send OTP</Button>
         </form>
       </DialogContent>
+      {/* <OTPVerificationDialog open={setOtpVerificationOpen} setOpen={setOtpVerificationOpen} email={email} /> */}
     </Dialog>
   );
 };

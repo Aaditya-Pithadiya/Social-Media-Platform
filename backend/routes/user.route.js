@@ -8,7 +8,7 @@ const router = express.Router();
 router.route('/register').post(register);
 router.route('/Verifyemail').post(Verifyemail);
 router.route('/sendotp').post(forgotpassword);
-router.route('/verfiyUpdate').post(Verifyotp);
+router.route('/verifyUpdate').post(Verifyotp);
 
 
 router.route('/login').post(login);

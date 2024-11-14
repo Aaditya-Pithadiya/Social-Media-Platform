@@ -97,7 +97,7 @@ export const forgotpassword = async(req,res)=>{
            }
            
            user.verificationCode = Math.floor(100000 + Math.random()*900000).toString();
-           console.log(user.verificationCode);
+          // console.log(user.verificationCode);
            await user.save();
            await SendVerificationCode(user.email,user.verificationCode);
 
@@ -111,14 +111,14 @@ export const forgotpassword = async(req,res)=>{
 
 export const Verifyotp = async (req, res) => {
     try {
-        const { email, code ,password,confirmPassword} = req.body;
-
-        if (!email || !code || !password || !confirmPassword) {
+        const { email, otp ,password,confirmPassword} = req.body;
+        console.log(email,otp,password,confirmPassword);
+        if (!email || !otp || !password || !confirmPassword) {
             return res.status(400).json({ success: false, message: "Email and code are required" });
         }
-
+   
         // Find user by email and verification code
-        const user = await User.findOne({ email, verificationCode: code });
+        const user = await User.findOne({ email, verificationCode: otp });
 
         if (!user) {
             return res.status(400).json({ success: false, message: "Invalid or expired code." });
@@ -141,9 +141,9 @@ export const Verifyotp = async (req, res) => {
 
         //checking
         const Userchk = await User.findOne({ email });
-        console.log(Userchk.password);
+        //console.log(Userchk.password);
        
-        return res.status(200).json({success:true,message:"Password Changed succesfully"})
+        return res.status(200).json({success:true, message:"Password Changed succesfully"})
 
     } catch (error) {
         console.log(error);

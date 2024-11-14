@@ -170,9 +170,6 @@ const Post = ({ post }) => {
                         <Button variant="ghost" className="cursor-pointer w-fit text-purple-700 font-bold hover:bg-purple-100" onClick={handleFollowToggle}>
                             {isFollowing ? 'Unfollow' : 'Follow'}
                         </Button>
-                        <Button variant="ghost" className="cursor-pointer w-fit text-purple-700 hover:bg-purple-100">
-                            Add to favorites
-                        </Button>
                         {user && user?._id === post?.author?._id && (
                             <Button onClick={deletePostHandler} variant="ghost" className="cursor-pointer w-fit text-red-600 hover:bg-red-50">
                                 Delete
