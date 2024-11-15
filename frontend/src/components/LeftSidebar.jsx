@@ -20,6 +20,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setAuthUser } from '../redux/authSlice';
 import CreatePost from './CreatePost';
 import { setPosts, setSelectedPost } from '../redux/postSlice';
+import * as Popover from '@radix-ui/react-popover'; // Importing Popover components from Radix UI
 
 const LeftSidebar = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -31,7 +32,6 @@ const LeftSidebar = () => {
   const { user } = useSelector(store => store.auth);
   const { likeNotification } = useSelector(store => store.realTimeNotification);
 
-  // Search-related state
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -52,7 +52,7 @@ const LeftSidebar = () => {
     { icon: <AiOutlineHome className="w-6 h-6" />, text: "Home" },
     { icon: <AiOutlineSearch className="w-6 h-6" />, text: "Search" },
     { icon: <AiOutlineMessage className="w-6 h-6" />, text: "Messages" },
-    { icon: <AiOutlineHeart className="w-6 h-6" />, text: "Notifications" },
+    { icon: <AiOutlinePlusSquare className="w-6 h-6" />, text: "Notifications" },
     { icon: <AiOutlinePlusSquare className="w-6 h-6" />, text: "Create" },
     {
       icon: (
@@ -193,9 +193,35 @@ const LeftSidebar = () => {
                   {item.text}
                 </span>
 
-                {/* testing */}
-                
-
+                {/* Notifications Popover */}
+                {item.text === "Notifications"  && (
+                  <Popover.Root>
+                    <Popover.Trigger asChild>
+                      <button className="rounded-full h-5 w-5 bg-red-600 hover:bg-red-600 absolute bottom-6 left-6">
+                        {likeNotification.length}
+                      </button>
+                    </Popover.Trigger>
+                    <Popover.Content>
+                      <div>
+                        {likeNotification.length === 0 ? (
+                          <p>No new notification</p>
+                        ) : (
+                          likeNotification.map((notification) => (
+                            <div key={notification.userId} className='flex items-center gap-2 my-2'>
+                              <Avatar>
+                                <AvatarImage src={notification.userDetails?.profilePicture} />
+                                <AvatarFallback>CN</AvatarFallback>
+                              </Avatar>
+                              <p className='text-sm'>
+                                <span className='font-bold'>{notification.userDetails?.username}</span> liked your post
+                              </p>
+                            </div>
+                          ))
+                        )}
+                      </div>
+                    </Popover.Content>
+                  </Popover.Root>
+                )}
               </button>
             ))}
           </div>
@@ -210,30 +236,20 @@ const LeftSidebar = () => {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full p-2 border rounded focus:outline-none focus:border-purple-600"
-              placeholder="Search users by username"
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-600"
+              placeholder="Search..."
             />
-            <ul className="mt-4">
-              {searchResults.map((user) => (
-                <li
-                  key={user._id}
-                  onClick={() => navigate(`/profile/${user._id}`)}
-                  className="flex items-center gap-2 p-2 rounded hover:bg-gray-100 cursor-pointer"
-                >
-                  <Avatar className="w-8 h-8 flex items-center justify-center">
-                    <AvatarImage src={user?.profilePicture} alt={user.username} />
-                    <AvatarFallback>U</AvatarFallback>
+            <div className="mt-4">
+              {searchResults.map((result) => (
+                <div key={result.id} className="flex items-center py-2 border-b">
+                  <Avatar className="w-10 h-10 mr-3">
+                    <AvatarImage src={result.profilePicture} />
+                    <AvatarFallback>{result.username.charAt(0)}</AvatarFallback>
                   </Avatar>
-                  <span>{user.username}</span>
-                </li>
+                  <span className="font-semibold">{result.username}</span>
+                </div>
               ))}
-              {searchResults.length === 0 && searchQuery && (
-                <li className="text-gray-500 text-sm mt-2">No users found</li>
-              )}
-            </ul>
-            <button onClick={() => setSearchOpen(false)} className="mt-4 w-full bg-purple-500 text-white py-2 rounded">
-              Close
-            </button>
+            </div>
           </div>
         </div>
       )}
