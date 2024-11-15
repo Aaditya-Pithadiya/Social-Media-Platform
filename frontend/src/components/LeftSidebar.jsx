@@ -24,8 +24,8 @@ import { setPosts, setSelectedPost } from '../redux/postSlice';
 import * as Popover from '@radix-ui/react-popover'; // Importing Popover components from Radix UI
 
 const LeftSidebar = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [menuButtonVisible, setMenuButtonVisible] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [menuButtonVisible, setMenuButtonVisible] = useState(false);
   const [activeItem, setActiveItem] = useState('Home');
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
@@ -38,7 +38,15 @@ const LeftSidebar = () => {
   const [searchOpen, setSearchOpen] = useState(false);
 
   const toggleSidebar = () => {
-    setSidebarOpen(prev => !prev);
+    if (sidebarOpen) {
+      setSidebarOpen(false);
+      setTimeout(() => {
+        setMenuButtonVisible(true);
+      }, 500);
+    } else {
+      setMenuButtonVisible(false);
+      setSidebarOpen(true);
+    }
   };
 
   const sidebarItems = [
@@ -49,7 +57,7 @@ const LeftSidebar = () => {
     { icon: <AiOutlinePlusSquare className="w-6 h-6" />, text: "Create" },
     {
       icon: (
-        <Avatar className="w-6.5 h-6.5 flex items-center justify-center">
+        <Avatar className="w-8 h-8 flex items-center justify-center">
           <AvatarImage
             src={user?.profilePicture}
             className="rounded-full object-cover"
@@ -101,7 +109,7 @@ const LeftSidebar = () => {
         return;
       }
       try {
-        const response = await axios.get('http://localhost:8000/api/v1/user/search', {
+        const response = await axios.get(`http://localhost:8000/api/v1/user/search`, {
           params: { query: searchQuery },
           withCredentials: true
         });
@@ -121,23 +129,21 @@ const LeftSidebar = () => {
   return (
     <div>
       {/* Menu Button */}
-      <div className="fixed top-4 left-4 z-20 bg-gray">
+      <div className="fixed top-4 left-4 z-20">
         {menuButtonVisible && (
           <button
             onClick={toggleSidebar}
             className="p-2 hover:bg-purple-100 transition-colors duration-300"
           >
-            {/* <AiOutlineMenu className="w-8 h-8 text-purple-600" /> */}
+            <AiOutlineMenu className="w-8 h-8 text-purple-600" />
           </button>
         )}
       </div>
 
       {/* Sidebar */}
       <div
-        onMouseEnter={() => setSidebarOpen(true)}
-        onMouseLeave={() => setSidebarOpen(false)}
-        className={`fixed top-0 left-0 z-10 h-screen transition-all duration-500 ease-in-out
-          ${sidebarOpen ? "w-72" : "w-18"}
+        className={`fixed top-0 left-0 z-10 w-72 h-screen transition-all duration-500 ease-in-out
+          ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
           bg-gradient-to-b from-white via-purple-50 to-white
           border-r border-purple-100 backdrop-blur-lg`}
       >
@@ -145,21 +151,17 @@ const LeftSidebar = () => {
           {/* Logo Section */}
           <div className="flex items-center justify-between px-6 py-6 border-b border-purple-100">
             <div className="flex items-center gap-2">
-              {/* <AiOutlineStar className="w-6 h-6 text-purple-600" /> */}
-              {sidebarOpen && (
-                <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600">
-                  Vibehub
-                </h1>
-              )}
+              <AiOutlineStar className="w-6 h-6 text-purple-600" />
+              <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600">
+                Vibehub
+              </h1>
             </div>
-            {sidebarOpen && (
-              <button
-                onClick={toggleSidebar}
-                className="hover:bg-purple-100 transition-colors duration-300 p-2"
-              >
-                <AiOutlineCloseCircle className="w-5 h-5 text-purple-600" />
-              </button>
-            )}
+            <button
+              onClick={toggleSidebar}
+              className="hover:bg-purple-100 transition-colors duration-300 p-2"
+            >
+              <AiOutlineCloseCircle className="w-5 h-5 text-purple-600" />
+            </button>
           </div>
 
           {/* Navigation Items */}
@@ -178,14 +180,15 @@ const LeftSidebar = () => {
                   }
                   group relative overflow-hidden`}
               >
+                {/* Hover Effect Background */}
                 <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 opacity-0 group-hover:opacity-10 transition-opacity duration-300" />
                 
+                {/* Icon */}
                 <div className={`flex items-center justify-center transition-transform duration-300 group-hover:scale-110
                   ${activeItem === item.text ? 'text-white' : 'text-purple-600'}`}>
                   {item.icon}
                 </div>
 
-<<<<<<< Updated upstream
                 {/* Text */}
                 <span className={`font-semibold transition-all duration-300 ${activeItem === item.text ? 'text-white' : ''}`}>
                   {item.text}
@@ -219,12 +222,6 @@ const LeftSidebar = () => {
                       </div>
                     </Popover.Content>
                   </Popover.Root>
-=======
-                {sidebarOpen && (
-                  <span className={`font-semibold transition-all duration-300 ${activeItem === item.text ? 'text-white' : ''}`}>
-                    {item.text}
-                  </span>
->>>>>>> Stashed changes
                 )}
               </button>
             ))}
@@ -253,25 +250,12 @@ const LeftSidebar = () => {
                   <span className="font-semibold">{result.username}</span>
                 </div>
               ))}
-<<<<<<< Updated upstream
             </div>
-=======
-              {searchResults.length === 0 && searchQuery && (
-                <li className="text-gray-500 text-sm mt-2">No users found</li>
-              )}
-            </ul>
-            <button onClick={() => setSearchOpen(false)} className="mt-4 w-full text-center p-2 text-sm text-white bg-purple-600 rounded">
-              Close
-            </button>
->>>>>>> Stashed changes
           </div>
         </div>
       )}
 
-      {/* Create Post Modal */}
-      {open && (
-        <CreatePost open={open} setOpen={setOpen} />
-      )}
+      <CreatePost open={open} setOpen={setOpen} />
     </div>
   );
 };
