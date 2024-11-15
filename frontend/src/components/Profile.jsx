@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 import { Button } from './ui/button';
 import axios from 'axios';
 import { AtSign, Heart, MessageCircle } from 'lucide-react';
+import user_photo from "../assets/user photo.jpg";
 
 const Profile = () => {
   const { id: userId } = useParams(); 
@@ -62,7 +63,7 @@ const Profile = () => {
           <section className="flex items-center justify-center">
             <Avatar className="h-32 w-32 ring-2 ring-purple-700">
               <AvatarImage src={userProfile?.profilePicture} alt="profilephoto" />
-              <AvatarFallback className="bg-gray-100">CN</AvatarFallback>
+              <AvatarFallback className="bg-gray-100"><img src={user_photo} alt="CN" className="h-20 w-20 object-cover" /></AvatarFallback>
             </Avatar>
           </section>
           <section>

@@ -11,6 +11,7 @@ import {
 } from 'react-icons/ai';
 
 import 'react-toastify/dist/ReactToastify.css';  
+import user_photo from "../assets/user photo.jpg";
 import React, { useState, useEffect } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { toast } from 'sonner';
@@ -62,7 +63,7 @@ const LeftSidebar = () => {
             className="rounded-full object-cover"
             alt="@shadcn"
           />
-          <AvatarFallback>CN</AvatarFallback>
+          <AvatarFallback><img src={user_photo} alt="CN" className="h-20 w-20 object-cover" /></AvatarFallback>
         </Avatar>
       ),
       text: "Profile",
@@ -210,7 +211,7 @@ const LeftSidebar = () => {
                             <div key={notification.userId} className='flex items-center gap-2 my-2'>
                               <Avatar>
                                 <AvatarImage src={notification.userDetails?.profilePicture} />
-                                <AvatarFallback>CN</AvatarFallback>
+                                <AvatarFallback><img src={user_photo} alt="CN" className="h-20 w-20 object-cover" /></AvatarFallback>
                               </Avatar>
                               <p className='text-sm'>
                                 <span className='font-bold'>{notification.userDetails?.username}</span> liked your post
