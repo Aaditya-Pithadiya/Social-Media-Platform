@@ -10,9 +10,6 @@ const SuggestedUsers = () => {
         <div className="my-10 bg-purple-50 rounded-lg p-4 shadow-sm">
             <div className="flex items-center justify-between text-sm mb-6">
                 <h1 className="font-semibold text-purple-900">Suggested for you</h1>
-                <span className="font-medium cursor-pointer text-purple-600 hover:text-purple-800 transition-colors">
-                    See All
-                </span>
             </div>
 
             {suggestedUsers.map((user) => (

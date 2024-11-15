@@ -74,12 +74,7 @@ const TopNavbar = () => {
           >
             <AiOutlineHome className="w-6 h-6" />
           </button>
-          <button
-            onClick={() => setOpen(true)}
-            className="flex items-center p-2 rounded-lg hover:bg-purple-600 text-white"
-          >
-            <AiOutlinePlusSquare className="w-6 h-6" />
-          </button>
+          
           <button
             onClick={() => navigate("/chat")}
             className="flex items-center p-2 rounded-lg hover:bg-purple-600 text-white"
