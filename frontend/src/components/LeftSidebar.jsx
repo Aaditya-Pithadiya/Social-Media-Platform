@@ -1,118 +1,48 @@
-import { 
-  AiOutlineHome, 
-  AiOutlineSearch, 
-  AiOutlineMessage, 
-  AiOutlineHeart, 
-  AiOutlinePlusSquare, 
-  AiOutlineLogout, 
-  AiOutlineCloseCircle, 
-  AiOutlineMenu, 
-  AiOutlineStar 
-} from 'react-icons/ai';
-
-import 'react-toastify/dist/ReactToastify.css';  
 import user_photo from "../assets/user photo.jpg";
-import React, { useState, useEffect } from 'react';
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
-import { toast } from 'sonner';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { setAuthUser } from '../redux/authSlice';
-import CreatePost from './CreatePost';
-import { setPosts, setSelectedPost } from '../redux/postSlice';
-import * as Popover from '@radix-ui/react-popover'; // Importing Popover components from Radix UI
+import CreatePost from "./CreatePost";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import * as Popover from "@radix-ui/react-popover";
+import axios from "axios";
+import React, { useState, useEffect } from "react";
+import {
+  AiOutlineHome,
+  AiOutlineSearch,
+  AiOutlineMessage,
+  AiOutlinePlusSquare,
+  AiOutlineBell,
+} from "react-icons/ai";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
-const LeftSidebar = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [menuButtonVisible, setMenuButtonVisible] = useState(false);
-  const [activeItem, setActiveItem] = useState('Home');
-  const navigate = useNavigate();
-  const [open, setOpen] = useState(false);
-  const dispatch = useDispatch();
-  const { user } = useSelector(store => store.auth);
-  const { likeNotification } = useSelector(store => store.realTimeNotification);
-
-  const [searchQuery, setSearchQuery] = useState('');
+const TopNavbar = () => {
+  // const [activeItem, setActiveItem] = useState("Home");
+  const [open, setOpen] = useState(false); // State for CreatePost Dialog
+  const [dropdownOpen, setDropdownOpen] = useState(false); // State for Profile Dropdown
+  const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-  const [searchOpen, setSearchOpen] = useState(false);
+  const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false); // State for Logout Confirmation
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { user } = useSelector((store) => store.auth);
 
-  const toggleSidebar = () => {
-    if (sidebarOpen) {
-      setSidebarOpen(false);
-      setTimeout(() => {
-        setMenuButtonVisible(true);
-      }, 500);
-    } else {
-      setMenuButtonVisible(false);
-      setSidebarOpen(true);
-    }
-  };
-
-  const sidebarItems = [
-    { icon: <AiOutlineHome className="w-6 h-6" />, text: "Home" },
-    { icon: <AiOutlineSearch className="w-6 h-6" />, text: "Search" },
-    { icon: <AiOutlineMessage className="w-6 h-6" />, text: "Messages" },
-    { icon: <AiOutlinePlusSquare className="w-6 h-6" />, text: "Notifications" },
-    { icon: <AiOutlinePlusSquare className="w-6 h-6" />, text: "Create" },
-    {
-      icon: (
-        <Avatar className="w-8 h-8 flex items-center justify-center">
-          <AvatarImage
-            src={user?.profilePicture}
-            className="rounded-full object-cover"
-            alt="@shadcn"
-          />
-          <AvatarFallback><img src={user_photo} alt="CN" className="h-20 w-20 object-cover" /></AvatarFallback>
-        </Avatar>
-      ),
-      text: "Profile",
-    },
-    { icon: <AiOutlineLogout className="w-6 h-6" />, text: "Logout" },
-  ];
-
-  const logoutHandler = async () => {
-    try {
-      const res = await axios.get('http://localhost:8000/api/v1/user/logout', { withCredentials: true });
-      if (res.data.success) {
-        dispatch(setAuthUser(null));
-        dispatch(setSelectedPost(null));
-        dispatch(setPosts([]));
-        navigate("/login");
-        toast.success(res.data.message);
-      }
-    } catch (error) {
-      toast.error(error.response.data.message);
-    }
-  };
-
-  const sidebarHandler = (textType) => {
-    if (textType === 'Logout') {
-      logoutHandler();
-    } else if (textType === "Create") {
-      setOpen(true);
-    } else if (textType === "Profile") {
-      navigate(`/profile/${user?._id}`);
-    } else if (textType === "Home") {
-      navigate("/");
-    } else if (textType === 'Messages') {
-      navigate("/chat");
-    } else if (textType === 'Search') {
-      setSearchOpen(!searchOpen); 
-    }
-  };
+  // Placeholder for notifications (replace with actual notification data)
+  const likeNotification = []; // Replace with actual notification state or data
 
   useEffect(() => {
     const fetchSearchResults = async () => {
-      if (searchQuery.trim() === '') {
+      if (searchQuery.trim() === "") {
         setSearchResults([]);
         return;
       }
       try {
-        const response = await axios.get(`http://localhost:8000/api/v1/user/search`, {
-          params: { query: searchQuery },
-          withCredentials: true
-        });
+        const response = await axios.get(
+          `http://localhost:8000/api/v1/user/search`,
+          {
+            params: { query: searchQuery },
+            withCredentials: true,
+          }
+        );
         if (response.data.success) {
           setSearchResults(response.data.users);
         }
@@ -123,155 +53,201 @@ const LeftSidebar = () => {
 
     const debounceSearch = setTimeout(fetchSearchResults, 300);
     return () => clearTimeout(debounceSearch);
-
   }, [searchQuery]);
 
+  const handleLogOut = () => {
+    // Perform logout action here
+    toast.success("Logged out successfully");
+    navigate("/login");
+    setLogoutConfirmOpen(false); // Close the confirmation dialog
+  };
+
   return (
-    <div>
-      {/* Menu Button */}
-      <div className="fixed top-4 left-4 z-20">
-        {menuButtonVisible && (
+    <div className="w-full fixed top-0 z-10 bg-gradient-to-r from-purple-500 to-pink-500 border-b border-purple-100">
+      {/* Navbar */}
+      <div className="flex items-center justify-between px-4 h-16">
+        <div className="flex items-center space-x-6">
+          {/* Left Section - Home, CreatePost, and Messages */}
           <button
-            onClick={toggleSidebar}
-            className="p-2 hover:bg-purple-100 transition-colors duration-300"
+            onClick={() => navigate("/")}
+            className="flex items-center p-2 rounded-lg hover:bg-purple-600 text-white"
           >
-            <AiOutlineMenu className="w-8 h-8 text-purple-600" />
+            <AiOutlineHome className="w-6 h-6" />
           </button>
-        )}
-      </div>
+          <button
+            onClick={() => setOpen(true)}
+            className="flex items-center p-2 rounded-lg hover:bg-purple-600 text-white"
+          >
+            <AiOutlinePlusSquare className="w-6 h-6" />
+          </button>
+          <button
+            onClick={() => navigate("/chat")}
+            className="flex items-center p-2 rounded-lg hover:bg-purple-600 text-white"
+          >
+            <AiOutlineMessage className="w-6 h-6" />
+          </button>
+        </div>
 
-      {/* Sidebar */}
-      <div
-        className={`fixed top-0 left-0 z-10 w-72 h-screen transition-all duration-500 ease-in-out
-          ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
-          bg-gradient-to-b from-white via-purple-50 to-white
-          border-r border-purple-100 backdrop-blur-lg`}
-      >
-        <div className="flex flex-col h-full">
-          {/* Logo Section */}
-          <div className="flex items-center justify-between px-6 py-6 border-b border-purple-100">
-            <div className="flex items-center gap-2">
-              <AiOutlineStar className="w-6 h-6 text-purple-600" />
-              <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600">
-                Vibehub
-              </h1>
-            </div>
-            <button
-              onClick={toggleSidebar}
-              className="hover:bg-purple-100 transition-colors duration-300 p-2"
-            >
-              <AiOutlineCloseCircle className="w-5 h-5 text-purple-600" />
-            </button>
+        {/* Center Section - Search Bar */}
+        <div className="flex-1 mx-4">
+          <div className="relative">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              placeholder="Search users..."
+            />
+            {searchResults.length > 0 && (
+              <ul className="absolute left-0 right-0 mt-1 bg-white shadow-lg max-h-60 overflow-y-auto rounded-lg z-10">
+                {searchResults.map((user) => (
+                  <li
+                    key={user._id}
+                    onClick={() => navigate(`/profile/${user._id}`)}
+                    className="flex items-center gap-2 p-2 hover:bg-gray-100 cursor-pointer"
+                  >
+                    <Avatar className="w-8 h-8">
+                      <AvatarImage
+                        src={user.profilePicture}
+                        alt={user.username}
+                      />
+                      <AvatarFallback>
+                        {user.username.charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <span>{user.username}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+            {searchQuery.trim() !== "" && searchResults.length === 0 && (
+              <div className="absolute left-0 right-0 mt-1 bg-white shadow-lg rounded-lg p-2 z-10">
+                <p>No users found</p>
+              </div>
+            )}
           </div>
+        </div>
 
-          {/* Navigation Items */}
-          <div className="flex flex-col flex-1 px-3 py-6 space-y-2 overflow-y-auto">
-            {sidebarItems.map((item, index) => (
-              <button
-                key={index}
-                onClick={() => { 
-                  sidebarHandler(item.text);
-                  setActiveItem(item.text);   
-                }}
-                className={`flex items-center gap-4 p-3 rounded-lg transition-all duration-300
-                  ${activeItem === item.text 
-                    ? 'bg-gradient-to-r from-purple-500 to-purple-600 text-white shadow-lg shadow-purple-200'
-                    : 'hover:bg-purple-100 text-gray-700 hover:text-purple-700'
-                  }
-                  group relative overflow-hidden`}
-              >
-                {/* Hover Effect Background */}
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 opacity-0 group-hover:opacity-10 transition-opacity duration-300" />
-                
-                {/* Icon */}
-                <div className={`flex items-center justify-center transition-transform duration-300 group-hover:scale-110
-                  ${activeItem === item.text ? 'text-white' : 'text-purple-600'}`}>
-                  {item.icon}
-                </div>
-
-                {/* Text */}
-                <span className={`font-semibold transition-all duration-300 ${activeItem === item.text ? 'text-white' : ''}`}>
-                  {item.text}
-                </span>
-
-                {/* Notifications Popover */}
-                {item.text === "Notifications"  && (
-                  <Popover.Root>
-                    <Popover.Trigger asChild>
-                      <button className="rounded-full h-5 w-5 bg-red-600 hover:bg-red-600 absolute bottom-6 left-6">
-                        {likeNotification.length}
-                      </button>
-                    </Popover.Trigger>
-                    <Popover.Content>
-                      <div>
-                        {likeNotification.length === 0 ? (
-                          <p>No new notification</p>
-                        ) : (
-                          likeNotification.map((notification) => (
-                            <div key={notification.userId} className='flex items-center gap-2 my-2'>
-                              <Avatar>
-                                <AvatarImage src={notification.userDetails?.profilePicture} />
-                                <AvatarFallback><img src={user_photo} alt="CN" className="h-20 w-20 object-cover" /></AvatarFallback>
-                              </Avatar>
-                              <p className='text-sm'>
-                                <span className='font-bold'>{notification.userDetails?.username}</span> liked your post
-                              </p>
-                            </div>
-                          ))
-                        )}
-                      </div>
-                    </Popover.Content>
-                  </Popover.Root>
+        {/* Right Section */}
+        <div className="flex items-center space-x-6">
+          {/* Notification Bell */}
+          <Popover.Root>
+            <Popover.Trigger asChild>
+              <button className="relative p-2 rounded-lg hover:bg-purple-100 text-white">
+                <AiOutlineBell className="w-6 h-6" />
+                {likeNotification.length >= 0 && (
+                  <span className="absolute top-0 right-0 bg-red-600 text-white text-xs rounded-full px-1">
+                    {likeNotification.length}
+                  </span>
                 )}
               </button>
-            ))}
+            </Popover.Trigger>
+            <Popover.Content className="w-48 bg-white rounded shadow p-4">
+              <div>
+                {likeNotification.length === 0 ? (
+                  <p>No new notification</p>
+                ) : (
+                  likeNotification.map((notification) => (
+                    <div
+                      key={notification.userId}
+                      className="flex items-center gap-2 my-2"
+                    >
+                      <Avatar>
+                        <AvatarImage
+                          src={notification.userDetails?.profilePicture}
+                        />
+                        <AvatarFallback>
+                          <img
+                            src={user_photo}
+                            alt="CN"
+                            className="h-20 w-20 object-cover"
+                          />
+                        </AvatarFallback>
+                      </Avatar>
+                      <p className="text-sm">
+                        <span className="font-bold">
+                          {notification.userDetails?.username}
+                        </span>{" "}
+                        liked your post
+                      </p>
+                    </div>
+                  ))
+                )}
+              </div>
+            </Popover.Content>
+          </Popover.Root>
+          <div className="relative">
+            {/* Avatar for Profile */}
+            <button
+              onClick={() => setDropdownOpen(!dropdownOpen)}
+              className="flex items-center rounded-full overflow-hidden w-10 h-10"
+            >
+              <Avatar className="w-full h-full">
+                <AvatarImage src={user?.profilePicture} alt={user?.username} />
+                <AvatarFallback>
+                  {user?.username?.charAt(0).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+            </button>
+            {dropdownOpen && (
+              <div className="absolute right-0 mt-2 w-48 bg-white shadow-md rounded-lg py-2 z-20">
+                <button
+                  onClick={() => {
+                    setDropdownOpen(false);
+                    navigate(`/profile/${user?._id}`);
+                  }}
+                  className="block w-full px-4 py-2 text-left hover:bg-gray-100"
+                >
+                  View Profile
+                </button>
+
+                <button
+                  onClick={() => {
+                    setDropdownOpen(false);
+                    setLogoutConfirmOpen(true); // Open confirmation dialog
+                  }}
+                  className="block w-full px-4 py-2 text-left hover:bg-gray-100 text-red-500"
+                >
+                  Log Out
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
 
-      {/* Search Modal */}
-      {searchOpen && (
-  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-30">
-    <div className="bg-white w-96 rounded-lg p-4 shadow-lg">
-      <input
-        type="text"
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        className="w-full p-2 border rounded focus:outline-none focus:border-purple-600"
-        placeholder="Search users by username"
-      />
-      <ul className="mt-4">
-        {searchResults.map((user) => (
-          <li
-            key={user._id}
-            onClick={() => navigate(`/profile/${user._id}`)}
-            className="flex items-center gap-2 p-2 rounded hover:bg-gray-100 cursor-pointer"
-          >
-            <Avatar className="w-8 h-8 flex items-center justify-center">
-              <AvatarImage src={user?.profilePicture} alt={user.username} />
-              <AvatarFallback>{user.username.charAt(0).toUpperCase()}</AvatarFallback>
-            </Avatar>
-            <span>{user.username}</span>
-          </li>
-        ))}
-        {searchResults.length === 0 && searchQuery && (
-          <li className="text-gray-500 text-sm mt-2">No users found</li>
-        )}
-      </ul>
-      <button
-        onClick={() => setSearchOpen(false)}
-        className="mt-4 w-full bg-purple-500 text-white py-2 rounded"
-      >
-        Close
-      </button>
-    </div>
-  </div>
-)}
-
-
+      {/* CreatePost Dialog */}
       <CreatePost open={open} setOpen={setOpen} />
+
+      {/* Logout Confirmation Modal */}
+      {logoutConfirmOpen && (
+        <div className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50 z-30">
+          <div className="bg-white rounded-lg p-6 w-96 shadow-lg">
+            <h3 className="text-xl font-semibold text-center mb-4">
+              Confirm Logout
+            </h3>
+            <p className="text-center mb-4">
+              Are you sure you want to log out?
+            </p>
+            <div className="flex justify-center space-x-4">
+              <button
+                onClick={handleLogOut}
+                className="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600"
+              >
+                Yes
+              </button>
+              <button
+                onClick={() => setLogoutConfirmOpen(false)} // Close the modal
+                className="bg-gray-300 text-black px-6 py-2 rounded-lg hover:bg-gray-400"
+              >
+                No
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
-export default LeftSidebar;
+export default TopNavbar;
