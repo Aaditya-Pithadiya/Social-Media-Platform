@@ -49,7 +49,7 @@ const Profile = () => {
   };
 
   // Filter posts to show only if the logged-in user is following this profile
-  const displayedPosts = activeTab === 'posts' && isFollowing
+  const displayedPosts = activeTab === 'posts' && (isFollowing || isLoggedInUserProfile)
     ? userProfile?.posts
     : activeTab === 'saved' && isLoggedInUserProfile
     ? globalUserProfile?.bookmarks // Show logged-in user's bookmarks
