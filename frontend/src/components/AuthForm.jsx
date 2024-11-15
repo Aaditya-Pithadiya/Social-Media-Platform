@@ -64,7 +64,7 @@ const AuthForm = () => {
     e.preventDefault();
     try {
       setLoading(true);
-      const input = { username, email, password };
+      const input = { "username" :username, "email" : email, "password" : password };
       const res = await axios.post('http://localhost:8000/api/v1/user/register', input, {
         headers: { 'Content-Type': 'application/json' },
         withCredentials: true

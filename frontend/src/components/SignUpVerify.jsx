@@ -22,7 +22,7 @@ const SignUpVerifyDialog = ({ open, setOpen, onSubmitEmail,email}) => {
      //console.log("Sending email and OTP to the backend:", { email, otp });
 
       // Make the API request to verify the email and OTP
-      const response = await axios.post("http://localhost:8000/api/v1/user/Verifyemail", { email, otp });
+      const response = await axios.post("http://localhost:8000/api/v1/user/Verifyemail", { "email":email, "otp":otp });
 
       // Log the response to see what we get from the backend
       //console.log("Backend response:", response);

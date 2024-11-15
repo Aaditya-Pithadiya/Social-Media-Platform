@@ -22,6 +22,13 @@ export const register = async (req, res) => {
                 success: false,
             });
         };
+        const ExistUserByUsername = await User.findOne({ username });
+        if (ExistUserByUsername) {
+            return res.status(401).json({
+                message: "Username already exists. Try a different one.",
+                success: false,
+            });
+        }
         const hashedPassword = await bcrypt.hash(password, 15);
         const verificationCode = Math.floor(100000 + Math.random()*900000).toString()
         const user = new User({

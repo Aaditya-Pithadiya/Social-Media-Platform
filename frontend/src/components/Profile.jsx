@@ -89,8 +89,7 @@ const Profile = () => {
                   <Link to="/account/edit">
                     <Button className="bg-purple-700 text-white hover:bg-purple-600 w-full md:w-auto h-8">Edit profile</Button>
                   </Link>
-                  <Button className="bg-purple-700 text-white hover:bg-purple-600 w-full md:w-auto h-8">View archive</Button>
-                  <Button className="bg-purple-700 text-white hover:bg-purple-600 w-full md:w-auto h-8">Ad tools</Button>
+                 
                 </>
               ) : (
                 <Button 

@@ -195,7 +195,7 @@ const Post = ({ post }) => {
                         dispatch(setSelectedPost(post));
                         setOpen(true);
                     }} className="cursor-pointer text-purple-600 hover:text-purple-700" />
-                    <Send className="cursor-pointer text-purple-600 hover:text-purple-700" />
+                   
                 </div>
                 <div className="flex items-center justify-between my-4">
                 {/* Other icons like Like, Comment */}
