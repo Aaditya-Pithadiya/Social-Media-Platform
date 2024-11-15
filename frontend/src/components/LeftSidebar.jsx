@@ -231,29 +231,43 @@ const LeftSidebar = () => {
 
       {/* Search Modal */}
       {searchOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-30">
-          <div className="bg-white w-96 rounded-lg p-4 shadow-lg">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-600"
-              placeholder="Search..."
-            />
-            <div className="mt-4">
-              {searchResults.map((result) => (
-                <div key={result.id} className="flex items-center py-2 border-b">
-                  <Avatar className="w-10 h-10 mr-3">
-                    <AvatarImage src={result.profilePicture} />
-                    <AvatarFallback>{result.username.charAt(0)}</AvatarFallback>
-                  </Avatar>
-                  <span className="font-semibold">{result.username}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
+  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-30">
+    <div className="bg-white w-96 rounded-lg p-4 shadow-lg">
+      <input
+        type="text"
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        className="w-full p-2 border rounded focus:outline-none focus:border-purple-600"
+        placeholder="Search users by username"
+      />
+      <ul className="mt-4">
+        {searchResults.map((user) => (
+          <li
+            key={user._id}
+            onClick={() => navigate(`/profile/${user._id}`)}
+            className="flex items-center gap-2 p-2 rounded hover:bg-gray-100 cursor-pointer"
+          >
+            <Avatar className="w-8 h-8 flex items-center justify-center">
+              <AvatarImage src={user?.profilePicture} alt={user.username} />
+              <AvatarFallback>{user.username.charAt(0).toUpperCase()}</AvatarFallback>
+            </Avatar>
+            <span>{user.username}</span>
+          </li>
+        ))}
+        {searchResults.length === 0 && searchQuery && (
+          <li className="text-gray-500 text-sm mt-2">No users found</li>
+        )}
+      </ul>
+      <button
+        onClick={() => setSearchOpen(false)}
+        className="mt-4 w-full bg-purple-500 text-white py-2 rounded"
+      >
+        Close
+      </button>
+    </div>
+  </div>
+)}
+
 
       <CreatePost open={open} setOpen={setOpen} />
     </div>
