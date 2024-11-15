@@ -8,14 +8,14 @@ import axios from 'axios';
 import { AtSign, Heart, MessageCircle } from 'lucide-react';
 
 const Profile = () => {
-  const { id: userId } = useParams(); // Get the profile ID from the route
+  const { id: userId } = useParams(); 
   useGetUserProfile(userId);
 
-  const { userProfile: globalUserProfile, user } = useSelector(store => store.auth); // Auth state
-  const [userProfile, setUserProfile] = useState(globalUserProfile); // Profile being viewed
-  const isLoggedInUserProfile = user?._id === globalUserProfile?._id; // Check if logged-in user's profile
-  const [activeTab, setActiveTab] = useState('posts'); // Tab selection
-  const [isFollowing, setIsFollowing] = useState(globalUserProfile?.followers.includes(user?._id)); // Follow state
+  const { userProfile: globalUserProfile, user } = useSelector(store => store.auth); 
+  const [userProfile, setUserProfile] = useState(globalUserProfile); 
+  const isLoggedInUserProfile = user?._id === globalUserProfile?._id; 
+  const [activeTab, setActiveTab] = useState('posts'); 
+  const [isFollowing, setIsFollowing] = useState(globalUserProfile?.followers.includes(user?._id)); 
 
   useEffect(() => {
     setUserProfile(globalUserProfile);
@@ -48,11 +48,12 @@ const Profile = () => {
     }
   };
 
-  const displayedPosts = activeTab === 'posts'
+  // Filter posts to show only if the logged-in user is following this profile
+  const displayedPosts = activeTab === 'posts' && isFollowing
     ? userProfile?.posts
-    : isLoggedInUserProfile
+    : activeTab === 'saved' && isLoggedInUserProfile
     ? globalUserProfile?.bookmarks // Show logged-in user's bookmarks
-    : []; // No bookmarks for other users
+    : []; // No bookmarks for other users or if not following
 
   return (
     <div className="flex max-w-5xl justify-center mx-auto">
