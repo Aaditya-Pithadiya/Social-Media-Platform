@@ -353,4 +353,34 @@ export const searchUsers = async (req, res) => {
       res.status(500).json({ success: false, message: "Error searching users" });
     }
   };
+
+
+ export const getFollowers = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const user = await User.findById(id).populate('followers', 'username profilePicture');
+      if (!user) {
+        return res.status(404).json({ success: false, message: 'User not found' });
+      }
+      res.status(200).json({ success: true, followers: user.followers });
+    } catch (error) {
+      res.status(500).json({ success: false, message: 'Error fetching followers', error });
+    }
+  };
   
+  // Fetch following of a user
+ export const getFollowing = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const user = await User.findById(id).populate('following', 'username profilePicture');
+      if (!user) {
+        return res.status(404).json({ success: false, message: 'User not found' });
+      }
+      res.status(200).json({ success: true, following: user.following });
+    } catch (error) {
+      res.status(500).json({ success: false, message: 'Error fetching following', error });
+    }
+  };
+  
+  
+
