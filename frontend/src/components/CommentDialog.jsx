@@ -83,7 +83,7 @@ const CommentDialog = ({ open, setOpen }) => {
                 </div>
               </div>
 
-              <Dialog>
+              {/* <Dialog>
                 <DialogTrigger asChild>
                   <MoreHorizontal className='cursor-pointer' />
                 </DialogTrigger>
@@ -95,7 +95,7 @@ const CommentDialog = ({ open, setOpen }) => {
                     Add to favorites
                   </div>
                 </DialogContent>
-              </Dialog>
+              </Dialog> */}
             </div>
             <hr />
             <div className='flex-1 overflow-y-auto max-h-96 p-4'>
