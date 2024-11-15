@@ -29,6 +29,7 @@ const LeftSidebar = () => {
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
   const { user } = useSelector(store => store.auth);
+  const { likeNotification } = useSelector(store => store.realTimeNotification);
 
   // Search-related state
   const [searchQuery, setSearchQuery] = useState('');
@@ -191,6 +192,10 @@ const LeftSidebar = () => {
                 <span className={`font-semibold transition-all duration-300 ${activeItem === item.text ? 'text-white' : ''}`}>
                   {item.text}
                 </span>
+
+                {/* testing */}
+                
+
               </button>
             ))}
           </div>

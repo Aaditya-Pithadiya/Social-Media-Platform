@@ -14,6 +14,7 @@ import {io} from 'socket.io-client';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSocket } from './redux/socketSlice';
 import { setOnlineUsers } from './redux/chatSlice';
+import { setLikeNotification } from './redux/rtnSlice';
 
 
 // Configure routes
@@ -72,9 +73,9 @@ function App() {
         dispatch(setOnlineUsers(onlineUsers));
       });
 
-      // socketio.on('notification', (notification) => {
-      //   dispatch(setLikeNotification(notification));
-      // });
+      socketio.on('notification', (notification) => {
+        dispatch(setLikeNotification(notification));
+      });
 
       return () => {
         socketio.close();
