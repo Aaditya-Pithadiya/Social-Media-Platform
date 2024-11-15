@@ -112,14 +112,14 @@ export const likePost = async (req, res) => {
         await post.updateOne({ $addToSet: { likes: userIDwhoLikedPost } });
         await post.save();
 
-        const user = await User.findById(likeKrneWalaUserKiId).select('username profilePicture');
+        const user = await User.findById(userIDwhoLikedPost).select('username profilePicture');
          
         const postOwnerId = post.author.toString();
-        if(postOwnerId !== likeKrneWalaUserKiId){
+        if(postOwnerId !== userIDwhoLikedPost){
             // emit a notification event
             const notification = {
                 type:'like',
-                userId:likeKrneWalaUserKiId,
+                userId:userIDwhoLikedPost,
                 userDetails:user,
                 postId,
                 message:'Your post was liked'
@@ -144,13 +144,13 @@ export const dislikePost = async (req, res) => {
         await post.updateOne({ $pull: { likes: userIDwhoLikedPost } });
         await post.save();
 
-        const user = await User.findById(likeKrneWalaUserKiId).select('username profilePicture');
+        const user = await User.findById(userIDwhoLikedPost).select('username profilePicture');
         const postOwnerId = post.author.toString();
-        if(postOwnerId !== likeKrneWalaUserKiId){
+        if(postOwnerId !== userIDwhoLikedPost){
             // emit a notification event
             const notification = {
                 type:'dislike',
-                userId:likeKrneWalaUserKiId,
+                userId:userIDwhoLikedPost,
                 userDetails:user,
                 postId,
                 message:'Your post was liked'
