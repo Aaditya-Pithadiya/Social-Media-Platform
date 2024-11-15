@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Dialog, DialogContent, DialogTrigger } from './ui/dialog';
-import { Bookmark, MessageCircle, MoreHorizontal, Send } from 'lucide-react';
+import { MessageCircle, MoreHorizontal, Send } from 'lucide-react';
 import { Button } from './ui/button';
 import { FaHeart, FaRegHeart , FaBookmark, FaRegBookmark} from "react-icons/fa";
 import CommentDialog from './CommentDialog';
@@ -9,10 +9,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Badge } from './ui/badge';
 import axios from 'axios';
 import { toast } from 'sonner';
+import user_photo from "../assets/user photo.jpg";
 import { setPosts, setSelectedPost } from '../redux/postSlice';
 import { useNavigate } from 'react-router-dom';
 import useGetUserProfile from '../hooks/useGetUserProfile';
 //import { Link, useParams } from 'react-router-dom';
+
+
 const Post = ({ post }) => {
     const [text, setText] = useState("");
     const [open, setOpen] = useState(false);
@@ -149,7 +152,7 @@ const Post = ({ post }) => {
                 <div className="flex items-center gap-2">
                     <Avatar className="border-2 border-purple-300">
                         <AvatarImage src={post.author?.profilePicture || 'defaultProfilePictureUrl'} alt="User avatar" />
-                        <AvatarFallback>CN</AvatarFallback>
+                        <AvatarFallback> <img src={user_photo} alt="CN" className="h-20 w-20 object-cover" /></AvatarFallback>
                     </Avatar>
                     <div className="flex items-center gap-3">
                         <h1 onClick={() => navigateToUserProfile(post.author?._id)} className="font-medium text-purple-900 cursor-pointer">
@@ -181,7 +184,7 @@ const Post = ({ post }) => {
 
             <img className="rounded-lg my-2 w-full aspect-square object-cover" src={post.image} alt="Post" />
 
-            <div className="flex items-center justify-between my-4">
+            <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                     {liked ? (
                         <FaHeart onClick={likeOrDislikeHandler} size={24} className="cursor-pointer text-purple-600" />

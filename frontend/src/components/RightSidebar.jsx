@@ -3,6 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import SuggestedUsers from './SuggestedUsers';
+import user_photo from "../assets/user photo.jpg";
 
 const RightSidebar = () => {
   const { user } = useSelector(store => store.auth);
@@ -18,7 +19,7 @@ const RightSidebar = () => {
                 alt={`${user?.username}'s profile picture`} 
               />
               <AvatarFallback className="bg-purple-200 text-purple-700">
-                {user?.username?.substring(0, 2).toUpperCase() || 'CN'}
+                {user?.username?.substring(0, 2).toUpperCase() || <img src={user_photo} alt="CN" className="h-20 w-20 object-cover" />}
               </AvatarFallback>
             </Avatar>
           </Link>
