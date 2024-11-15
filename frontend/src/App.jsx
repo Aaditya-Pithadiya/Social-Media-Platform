@@ -15,29 +15,30 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setSocket } from './redux/socketSlice';
 import { setOnlineUsers } from './redux/chatSlice';
 import { setLikeNotification } from './redux/rtnSlice';
+import ProtectedRoutes from './ProtectedRoutes';
 
 
 // Configure routes
 const browserRouter = createBrowserRouter([
   {
     path: "/",
-    element: <MainLayout />, // Render MainLayout at the root
+    element:<ProtectedRoutes><MainLayout /></ProtectedRoutes> , // Render MainLayout at the root
     children: [
       {
         path: "/",
-        element: <Home />, // Home component as nested route
+        element:<ProtectedRoutes> <Home /> </ProtectedRoutes> , // Home component as nested route
       },
       {
         path: "/profile/:id",
-        element: <Profile />, // Profile component as nested route
+        element: <ProtectedRoutes> <Profile /> </ProtectedRoutes>, // Profile component as nested route
       },
       {
         path:'/account/edit',
-        element: <EditProfile/>
+        element: <ProtectedRoutes><EditProfile/></ProtectedRoutes>,
       },
       {
         path:'/chat',
-        element: <ChatPage/>
+        element: <ProtectedRoutes> <ChatPage/> </ProtectedRoutes>,
       },
     ],
   },
