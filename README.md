@@ -2,6 +2,7 @@
 
 ## Table of Contents
 - [Introduction](#introduction)
+- [Requirements](#requirements)
 - [Installation](#installation)
 - [Contributors](#contributors)
   
@@ -9,9 +10,43 @@
 ## Introduction
 This project is a social media platform, designed to allow users to share photos, follow other users, like and comment on posts, and interact within a community. The platform is developed with a focus on user experience and scalability, making it suitable for a college social network. Key features include user authentication, profile management, photo uploads. This project showcases skills in full-stack development, RESTful APIs.
 
-## Requirement  
+## Requirements  
+- Software and Tools
+   - Node.js and npm: Required to run the frontend and backend. Download from [Node.js](https://nodejs.org/en).
+   - Database:
+     - MongoDB: Ensure MongoDB is installed locally or set up a MongoDB Atlas account for cloud hosting.
+   - GitHub Desktop: To manage project source code.  
 ## Installation 
 ## Front-end
+To run your frontend code locally using npm, follow these steps:
+1. Ensure Node.js and npm are Installed
+     First, make sure you have [Node.js](https://nodejs.org/en) and npm installed. You can check by running:
+   
+   ```bash
+     node -v
+     npm -v
+    ```
+    If these commands return version numbers, Node.js and npm are installed.
+3. Navigate to Your Project Directory
+    Open a terminal or command prompt, then use cd to navigate to the root folder of your project:
+   
+    ```bash
+    cd frontend
+    ```
+4. Install Dependencies
+   Run the following command to install all dependencies listed in your package.json file:
+   
+   ```bash
+   npm install
+   ```
+6. Start the Development Server
+   Once dependencies are installed, start your development server by running:
+   
+   ```bash
+   npm start
+   ```
+   This command typically starts a server on http://localhost:3000 by default. You can open     
+   this URL in your browser to view your site.
 ## Back-end
 For Backend, you will need Node.js, Expressjs, MongodB, installed in your environement.  
 - Node 
@@ -29,20 +64,20 @@ For Backend, you will need Node.js, Expressjs, MongodB, installed in your enviro
   If the installation was successful, you should be able to run the following command.
   ```bash
   $ node --version
-  v18.17.1
+  v20.15.1
 
   $ npm --version
-  9.6.7
+  10.7.0
 If you need to update npm, you can make it using npm! Cool right? After running the following command, just open again the command line and be happy.
-  ```bash
-      $ npm install npm -g
-```
+    ```bash
+        $ npm install npm -g
+    ```
 - ExpressJS installation
-   ```bash
-  $ npm install express
-   ```
+     ```bash
+    $ npm install express
+     ```
    You can find more information about the installation on the official [Express website](https://expressjs.com/en/starter/installing.html).
-  - MongoDB
+- MongoDB
     ```bash
     $ npm install mongodb
     ```
