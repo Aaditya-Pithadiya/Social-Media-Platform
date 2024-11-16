@@ -3,7 +3,7 @@ import CreatePost from "./CreatePost";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import * as Popover from "@radix-ui/react-popover";
 import axios from "axios";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   AiOutlineHome,
   AiOutlineSearch,
@@ -17,12 +17,12 @@ import { toast } from "sonner";
 import { logout } from "../redux/authSlice";
 
 const TopNavbar = () => {
-  // const [activeItem, setActiveItem] = useState("Home");
   const [open, setOpen] = useState(false); // State for CreatePost Dialog
   const [dropdownOpen, setDropdownOpen] = useState(false); // State for Profile Dropdown
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false); // State for Logout Confirmation
+  const searchRef = useRef(null); // Reference for search input and results
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user } = useSelector((store) => store.auth);
@@ -58,6 +58,18 @@ const TopNavbar = () => {
     return () => clearTimeout(debounceSearch);
   }, [searchQuery]);
 
+  // Close search dropdown on clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setSearchResults([]); // Close the search dropdown
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   const handleLogOut = () => {
     dispatch(logout())
     toast.success("Logged out successfully");
@@ -77,7 +89,7 @@ const TopNavbar = () => {
           >
             <AiOutlineHome className="w-6 h-6" />
           </button>
-          
+
           <button
             onClick={() => navigate("/chat")}
             className="flex items-center p-2 rounded-lg hover:bg-purple-600 text-white"
@@ -87,7 +99,7 @@ const TopNavbar = () => {
         </div>
 
         {/* Center Section - Search Bar */}
-        <div className="flex-1 mx-4">
+        <div className="flex-1 mx-4" ref={searchRef}>
           <div className="relative">
             <input
               type="text"
@@ -119,8 +131,8 @@ const TopNavbar = () => {
               </ul>
             )}
             {searchQuery.trim() !== "" && searchResults.length === 0 && (
-              <div className="absolute left-0 right-0 mt-1 bg-white shadow-lg rounded-lg p-2 z-10">
-                <p>No users found</p>
+              <div className="absolute left-0 right-0 mt-0 bg-white shadow-lg rounded-lg p-0 z-0">
+                {/* <p>No users found</p> */}
               </div>
             )}
           </div>
@@ -235,8 +247,8 @@ const TopNavbar = () => {
                 Yes
               </button>
               <button
-                onClick={() => setLogoutConfirmOpen(false)} // Close the modal
-                className="bg-gray-300 text-black px-6 py-2 rounded-lg hover:bg-gray-400"
+                onClick={() => setLogoutConfirmOpen(false)} // Close the confirmation dialog
+                className="bg-gray-300 px-6 py-2 rounded-lg hover:bg-gray-400"
               >
                 No
               </button>
