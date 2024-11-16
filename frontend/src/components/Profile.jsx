@@ -5,7 +5,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Button } from './ui/button';
 import axios from 'axios';
-import { Heart, MessageCircle } from 'lucide-react';
+import {  Heart, MessageCircle } from 'lucide-react';
 import user_photo from "../assets/user photo.jpg";
 
 const Profile = () => {

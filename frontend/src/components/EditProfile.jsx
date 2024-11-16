@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Button } from './ui/button';
@@ -10,8 +10,9 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { setAuthUser } from '../redux/authSlice';
 
-const EditProfile = () => {
+const EditProfile = ({ onClose }) => {
     const imageRef = useRef();
+    const editProfileRef = useRef(null); // Ref for the EditProfile container
     const { user } = useSelector(store => store.auth);
     const [loading, setLoading] = useState(false);
     const [input, setInput] = useState({
@@ -21,6 +22,20 @@ const EditProfile = () => {
     });
     const navigate = useNavigate();
     const dispatch = useDispatch();
+
+    // Close profile edit when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (editProfileRef.current && !editProfileRef.current.contains(event.target)) {
+                onClose(); // Close the EditProfile component when clicking outside
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [onClose]);
 
     const fileChangeHandler = (e) => {
         const file = e.target.files?.[0];
@@ -67,39 +82,39 @@ const EditProfile = () => {
     }
 
     return (
-        <div className='flex max-w-2xl mx-auto p-8 bg-gray-50 rounded-lg shadow-md mt-12'>
+        <div ref={editProfileRef} className='flex max-w-2xl mx-auto p-8 bg-gray-800 rounded-lg shadow-md mt-12'>
             <section className='flex flex-col gap-6 w-full'>
-                <h1 className='font-bold text-2xl text-purple-600'>Edit Profile</h1>
-                <div className='flex items-center justify-between bg-gray-200 rounded-lg p-4'>
+                <h1 className='font-bold text-2xl text-red-600'>Edit Profile</h1>
+                <div className='flex items-center justify-between bg-gray-800 rounded-lg p-4'>
                     <div className='flex items-center gap-3'>
                         <Avatar>
                             <AvatarImage src={user?.profilePicture} alt="profile_image" />
                             <AvatarFallback>CN</AvatarFallback>
                         </Avatar>
                         <div>
-                            <h1 className='font-semibold text-gray-700'>{user?.username}</h1>
-                            <span className='text-sm text-gray-600'>{user?.bio || 'Bio here...'}</span>
+                            <h1 className='font-semibold text-white'>{user?.username}</h1>
+                            <span className='text-sm text-gray-400'>{user?.bio || 'Bio here...'}</span>
                         </div>
                     </div>
                     <input ref={imageRef} onChange={fileChangeHandler} type='file' className='hidden' />
-                    <Button onClick={() => imageRef?.current.click()} className='bg-purple-600 text-white hover:bg-purple-700 rounded-md'>
+                    <Button onClick={() => imageRef?.current.click()} className='bg-red-600 text-white hover:bg-red-700 rounded-md'>
                         Change photo
                     </Button>
                 </div>
                 <div>
-                    <h1 className='font-semibold text-lg text-gray-700 mb-2'>Bio</h1>
+                    <h1 className='font-semibold text-lg text-white mb-2'>Bio</h1>
                     <Textarea
                         value={input.bio}
                         onChange={(e) => setInput({ ...input, bio: e.target.value })}
                         name='bio'
-                        className="focus:ring-transparent focus:border-purple-500 text-gray-800"
+                        className="focus:ring-transparent focus:border-red-500 text-gray-800"
                         placeholder="Write something about yourself"
                     />
                 </div>
                 <div>
-                    <h1 className='font-semibold text-lg text-gray-700 mb-2'>Gender</h1>
+                    <h1 className='font-semibold text-lg text-white mb-2'>Gender</h1>
                     <Select defaultValue={input.gender} onValueChange={selectChangeHandler}>
-                        <SelectTrigger className="w-full border-gray-300 focus:border-purple-500">
+                        <SelectTrigger className="w-full border-gray-500 focus:border-red-500">
                             <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -112,12 +127,12 @@ const EditProfile = () => {
                 </div>
                 <div className='flex justify-end mt-4'>
                     {loading ? (
-                        <Button className='w-full bg-purple-600 text-white hover:bg-purple-700'>
+                        <Button className='w-full bg-red-600 text-white hover:bg-red-700'>
                             <Loader2 className='mr-2 h-4 w-4 animate-spin' />
                             Please wait
                         </Button>
                     ) : (
-                        <Button onClick={editProfileHandler} className='w-full bg-purple-600 text-white hover:bg-purple-700'>
+                        <Button onClick={editProfileHandler} className='w-full bg-red-600 text-white hover:bg-red-700'>
                             Submit
                         </Button>
                     )}
