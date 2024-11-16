@@ -18,10 +18,11 @@ const userSocketMap = {} ; // this map stores socket id corresponding the user i
 export const getReceiverSocketId = (receiverId) => userSocketMap[receiverId];
 
 io.on('connection', (socket)=>{
+    console.log("socket connection is on");
     const userId = socket.handshake.query.userId;
     if(userId){
         userSocketMap[userId] = socket.id;
-        console.log(`${userId} ==  ${socket.id}`)
+        // console.log(`${userId} ==  ${socket.id}`)
     }
 
     io.emit('getOnlineUsers', Object.keys(userSocketMap));

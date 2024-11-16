@@ -120,7 +120,7 @@ export const Verifyotp = async (req, res) => {
     try {
         
         const { email, otp ,password,confirmPassword} = req.body;
-        console.log(email,otp,password,confirmPassword);
+        // console.log(email,otp,password,confirmPassword);
         if (!email || !otp || !password || !confirmPassword) {
             return res.status(400).json({ success: false, message: "Email and code are required" });
         }

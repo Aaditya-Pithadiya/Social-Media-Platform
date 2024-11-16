@@ -44,7 +44,7 @@ const ChatPage = () => {
   }, [dispatch]);
 
   return (
-    <div className="flex ml-[0%] h-screen">
+    <div className="flex ml-[16%] h-screen">
       <section className="w-full md:w-1/4 my-8">
         <h1 className="font-bold mb-4 px-3 text-xl">{user?.username}</h1>
         <hr className="mb-4 border-gray-300" />

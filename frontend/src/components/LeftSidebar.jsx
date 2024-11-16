@@ -25,9 +25,11 @@ const TopNavbar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user } = useSelector((store) => store.auth);
+  const { likeNotification } = useSelector(store => store.realTimeNotification);
 
   // Placeholder for notifications (replace with actual notification data)
-  const likeNotification = []; // Replace with actual notification state or data
+  // const likeNotification = []; // Replace with actual notification state or data
+
 
   useEffect(() => {
     const fetchSearchResults = async () => {

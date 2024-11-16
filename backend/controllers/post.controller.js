@@ -153,7 +153,7 @@ export const dislikePost = async (req, res) => {
                 userId:userIDwhoLikedPost,
                 userDetails:user,
                 postId,
-                message:'Your post was liked'
+                message:'Your post was diliked'
             }
             const postOwnerSocketId = getReceiverSocketId(postOwnerId);
             io.to(postOwnerSocketId).emit('notification', notification);
