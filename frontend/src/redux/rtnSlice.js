@@ -10,7 +10,9 @@ const rtnSlice = createSlice({
       if (action.payload.type === "like") {
         // Check if the notification already exists
         const exists = state.likeNotification.some(
-          (item) => item.userId === action.payload.userId && item.postId === action.payload.postId
+          (item) =>
+            item.userId === action.payload.userId &&
+            item.postId === action.payload.postId
         );
         if (!exists) {
           state.likeNotification.push(action.payload);
@@ -18,12 +20,19 @@ const rtnSlice = createSlice({
       } else if (action.payload.type === "dislike") {
         // Remove notification matching userId and postId
         state.likeNotification = state.likeNotification.filter(
-          (item) => !(item.userId === action.payload.userId && item.postId === action.payload.postId)
+          (item) =>
+            !(
+              item.userId === action.payload.userId &&
+              item.postId === action.payload.postId
+            )
         );
       }
+    },
+    clearLikeNotifications: (state) => {
+      state.likeNotification = []; // Clear all notifications
     },
   },
 });
 
-export const { setLikeNotification } = rtnSlice.actions;
+export const { setLikeNotification, clearLikeNotifications } = rtnSlice.actions;
 export default rtnSlice.reducer;

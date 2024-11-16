@@ -6,15 +6,14 @@ import axios from "axios";
 import React, { useState, useEffect, useRef } from "react";
 import {
   AiOutlineHome,
-  AiOutlineSearch,
   AiOutlineMessage,
-  AiOutlinePlusSquare,
   AiOutlineBell,
 } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { logout } from "../redux/authSlice";
+import { clearLikeNotifications } from "../redux/rtnSlice";
 
 const TopNavbar = () => {
   const [open, setOpen] = useState(false); // State for CreatePost Dialog
@@ -22,15 +21,12 @@ const TopNavbar = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false); // State for Logout Confirmation
+  const [openNotificationPopover, setOpenNotificationPopover] = useState(false); // Notification popover state
   const searchRef = useRef(null); // Reference for search input and results
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user } = useSelector((store) => store.auth);
-  const { likeNotification } = useSelector(store => store.realTimeNotification);
-
-  // Placeholder for notifications (replace with actual notification data)
-  // const likeNotification = []; // Replace with actual notification state or data
-
+  const { likeNotification } = useSelector((store) => store.realTimeNotification);
 
   useEffect(() => {
     const fetchSearchResults = async () => {
@@ -58,7 +54,6 @@ const TopNavbar = () => {
     return () => clearTimeout(debounceSearch);
   }, [searchQuery]);
 
-  // Close search dropdown on clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
@@ -71,25 +66,30 @@ const TopNavbar = () => {
   }, []);
 
   const handleLogOut = () => {
-    dispatch(logout())
+    dispatch(logout());
     toast.success("Logged out successfully");
     navigate("/login");
     setLogoutConfirmOpen(false); // Close the confirmation dialog
   };
 
+  const handleNotificationPopoverChange = (isOpen) => {
+    setOpenNotificationPopover(isOpen);
+    if (!isOpen) {
+      dispatch(clearLikeNotifications()); // Clear notifications when Popover closes
+    }
+  };
+
   return (
     <div className="w-full fixed top-0 z-10 bg-gradient-to-r from-purple-500 to-pink-500 border-b border-purple-100">
-      {/* Navbar */}
       <div className="flex items-center justify-between px-4 h-16">
+        {/* Left Section */}
         <div className="flex items-center space-x-6">
-          {/* Left Section - Home, CreatePost, and Messages */}
           <button
             onClick={() => navigate("/")}
             className="flex items-center p-2 rounded-lg hover:bg-purple-600 text-white"
           >
             <AiOutlineHome className="w-6 h-6" />
           </button>
-
           <button
             onClick={() => navigate("/chat")}
             className="flex items-center p-2 rounded-lg hover:bg-purple-600 text-white"
@@ -130,22 +130,20 @@ const TopNavbar = () => {
                 ))}
               </ul>
             )}
-            {searchQuery.trim() !== "" && searchResults.length === 0 && (
-              <div className="absolute left-0 right-0 mt-0 bg-white shadow-lg rounded-lg p-0 z-0">
-                {/* <p>No users found</p> */}
-              </div>
-            )}
           </div>
         </div>
 
         {/* Right Section */}
         <div className="flex items-center space-x-6">
-          {/* Notification Bell */}
-          <Popover.Root>
+          {/* Notifications */}
+          <Popover.Root
+            open={openNotificationPopover}
+            onOpenChange={handleNotificationPopoverChange}
+          >
             <Popover.Trigger asChild>
               <button className="relative p-2 rounded-lg hover:bg-purple-100 text-white">
                 <AiOutlineBell className="w-6 h-6" />
-                {likeNotification.length >= 0 && (
+                {likeNotification.length > 0 && (
                   <span className="absolute top-0 right-0 bg-red-600 text-white text-xs rounded-full px-1">
                     {likeNotification.length}
                   </span>
@@ -153,41 +151,34 @@ const TopNavbar = () => {
               </button>
             </Popover.Trigger>
             <Popover.Content className="w-48 bg-white rounded shadow p-4">
-              <div>
-                {likeNotification.length === 0 ? (
-                  <p>No new notification</p>
-                ) : (
-                  likeNotification.map((notification) => (
-                    <div
-                      key={notification.userId}
-                      className="flex items-center gap-2 my-2"
-                    >
-                      <Avatar>
-                        <AvatarImage
-                          src={notification.userDetails?.profilePicture}
-                        />
-                        <AvatarFallback>
-                          <img
-                            src={user_photo}
-                            alt="CN"
-                            className="h-20 w-20 object-cover"
-                          />
-                        </AvatarFallback>
-                      </Avatar>
-                      <p className="text-sm">
-                        <span className="font-bold">
-                          {notification.userDetails?.username}
-                        </span>{" "}
-                        liked your post
-                      </p>
-                    </div>
-                  ))
-                )}
-              </div>
+              {likeNotification.length === 0 ? (
+                <p>No new notifications</p>
+              ) : (
+                likeNotification.map((notification) => (
+                  <div
+                    key={notification.userId}
+                    className="flex items-center gap-2 my-2"
+                  >
+                    <Avatar>
+                      <AvatarImage src={notification.userDetails?.profilePicture} />
+                      <AvatarFallback>
+                        {notification.userDetails?.username.charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <p className="text-sm">
+                      <span className="font-bold">
+                        {notification.userDetails?.username}
+                      </span>{" "}
+                      liked your post
+                    </p>
+                  </div>
+                ))
+              )}
             </Popover.Content>
           </Popover.Root>
+
+          {/* Profile Dropdown */}
           <div className="relative">
-            {/* Avatar for Profile */}
             <button
               onClick={() => setDropdownOpen(!dropdownOpen)}
               className="flex items-center rounded-full overflow-hidden w-10 h-10"
@@ -210,7 +201,6 @@ const TopNavbar = () => {
                 >
                   View Profile
                 </button>
-
                 <button
                   onClick={() => {
                     setDropdownOpen(false);
