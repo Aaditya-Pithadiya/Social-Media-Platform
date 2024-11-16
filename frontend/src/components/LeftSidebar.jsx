@@ -57,7 +57,8 @@ const TopNavbar = () => {
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
-        setSearchResults([]); // Close the search dropdown
+        setSearchResults([]);
+        setSearchQuery(""); // Close the search dropdown
       }
     };
 
@@ -80,19 +81,20 @@ const TopNavbar = () => {
   };
 
   return (
-    <div className="w-full fixed top-0 z-10 bg-gradient-to-r from-purple-500 to-pink-500 border-b border-purple-100">
+    <div className="w-full fixed top-0 z-10 bg-gray-900 border-b border-gray-700">
+      {/* Navbar */}
       <div className="flex items-center justify-between px-4 h-16">
         {/* Left Section */}
         <div className="flex items-center space-x-6">
           <button
             onClick={() => navigate("/")}
-            className="flex items-center p-2 rounded-lg hover:bg-purple-600 text-white"
+            className="flex items-center p-2 rounded-lg hover:bg-gray-700 text-red-400"
           >
             <AiOutlineHome className="w-6 h-6" />
           </button>
           <button
             onClick={() => navigate("/chat")}
-            className="flex items-center p-2 rounded-lg hover:bg-purple-600 text-white"
+            className="flex items-center p-2 rounded-lg hover:bg-gray-700 text-red-400"
           >
             <AiOutlineMessage className="w-6 h-6" />
           </button>
@@ -105,16 +107,16 @@ const TopNavbar = () => {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="w-full px-4 py-2 rounded-lg border border-gray-600 bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-300"
               placeholder="Search users..."
             />
             {searchResults.length > 0 && (
-              <ul className="absolute left-0 right-0 mt-1 bg-white shadow-lg max-h-60 overflow-y-auto rounded-lg z-10">
+              <ul className="absolute left-0 right-0 mt-1 bg-gray-800 shadow-lg max-h-60 overflow-y-auto rounded-lg z-10">
                 {searchResults.map((user) => (
                   <li
                     key={user._id}
                     onClick={() => navigate(`/profile/${user._id}`)}
-                    className="flex items-center gap-2 p-2 hover:bg-gray-100 cursor-pointer"
+                    className="flex items-center gap-2 p-2 hover:bg-gray-700 cursor-pointer text-white"
                   >
                     <Avatar className="w-8 h-8">
                       <AvatarImage
@@ -141,7 +143,7 @@ const TopNavbar = () => {
             onOpenChange={handleNotificationPopoverChange}
           >
             <Popover.Trigger asChild>
-              <button className="relative p-2 rounded-lg hover:bg-purple-100 text-white">
+              <button className="relative p-2 rounded-lg hover:bg-gray-700 text-red-400">
                 <AiOutlineBell className="w-6 h-6" />
                 {likeNotification.length > 0 && (
                   <span className="absolute top-0 right-0 bg-red-600 text-white text-xs rounded-full px-1">
@@ -150,30 +152,38 @@ const TopNavbar = () => {
                 )}
               </button>
             </Popover.Trigger>
-            <Popover.Content className="w-48 bg-white rounded shadow p-4">
-              {likeNotification.length === 0 ? (
-                <p>No new notifications</p>
-              ) : (
-                likeNotification.map((notification) => (
-                  <div
-                    key={notification.userId}
-                    className="flex items-center gap-2 my-2"
-                  >
-                    <Avatar>
-                      <AvatarImage src={notification.userDetails?.profilePicture} />
-                      <AvatarFallback>
-                        {notification.userDetails?.username.charAt(0).toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                    <p className="text-sm">
-                      <span className="font-bold">
-                        {notification.userDetails?.username}
-                      </span>{" "}
-                      liked your post
-                    </p>
-                  </div>
-                ))
-              )}
+            <Popover.Content className="w-48 bg-gray-800 text-white rounded shadow p-4">
+              <div>
+                {likeNotification.length === 0 ? (
+                  <p>No new notification</p>
+                ) : (
+                  likeNotification.map((notification) => (
+                    <div
+                      key={notification.userId}
+                      className="flex items-center gap-2 my-2"
+                    >
+                      <Avatar>
+                        <AvatarImage
+                          src={notification.userDetails?.profilePicture}
+                        />
+                        <AvatarFallback>
+                          <img
+                            src={user_photo}
+                            alt="CN"
+                            className="h-20 w-20 object-cover"
+                          />
+                        </AvatarFallback>
+                      </Avatar>
+                      <p className="text-sm">
+                        <span className="font-bold">
+                          {notification.userDetails?.username}
+                        </span>{" "}
+                        liked your post
+                      </p>
+                    </div>
+                  ))
+                )}
+              </div>
             </Popover.Content>
           </Popover.Root>
 
@@ -191,13 +201,13 @@ const TopNavbar = () => {
               </Avatar>
             </button>
             {dropdownOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-white shadow-md rounded-lg py-2 z-20">
+              <div className="absolute right-0 mt-2 w-48 bg-gray-800 text-white shadow-md rounded-lg py-2 z-20">
                 <button
                   onClick={() => {
                     setDropdownOpen(false);
                     navigate(`/profile/${user?._id}`);
                   }}
-                  className="block w-full px-4 py-2 text-left hover:bg-gray-100"
+                  className="block w-full px-4 py-2 text-left hover:bg-gray-700"
                 >
                   View Profile
                 </button>
@@ -206,7 +216,7 @@ const TopNavbar = () => {
                     setDropdownOpen(false);
                     setLogoutConfirmOpen(true); // Open confirmation dialog
                   }}
-                  className="block w-full px-4 py-2 text-left hover:bg-gray-100 text-red-500"
+                  className="block w-full px-4 py-2 text-left hover:bg-gray-700 text-red-500"
                 >
                   Log Out
                 </button>
@@ -221,12 +231,12 @@ const TopNavbar = () => {
 
       {/* Logout Confirmation Modal */}
       {logoutConfirmOpen && (
-        <div className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50 z-30">
-          <div className="bg-white rounded-lg p-6 w-96 shadow-lg">
-            <h3 className="text-xl font-semibold text-center mb-4">
+        <div className="fixed inset-0 flex justify-center items-center bg-gray-900 bg-opacity-50 z-30">
+          <div className="bg-gray-800 rounded-lg p-6 w-96 shadow-lg">
+            <h3 className="text-xl font-semibold text-center mb-4 text-white">
               Confirm Logout
             </h3>
-            <p className="text-center mb-4">
+            <p className="text-center mb-4 text-white">
               Are you sure you want to log out?
             </p>
             <div className="flex justify-center space-x-4">
@@ -234,13 +244,13 @@ const TopNavbar = () => {
                 onClick={handleLogOut}
                 className="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600"
               >
-                Yes
+                Yes, Log Out
               </button>
               <button
-                onClick={() => setLogoutConfirmOpen(false)} // Close the confirmation dialog
-                className="bg-gray-300 px-6 py-2 rounded-lg hover:bg-gray-400"
+                onClick={() => setLogoutConfirmOpen(false)}
+                className="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700"
               >
-                No
+                Cancel
               </button>
             </div>
           </div>

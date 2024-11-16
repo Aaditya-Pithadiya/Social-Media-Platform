@@ -38,6 +38,7 @@ const EditProfile = () => {
         if (input.profilePhoto) {
             formData.append("profilePhoto", input.profilePhoto);
         }
+ 
         try {
             setLoading(true);
             const res = await axios.post('http://localhost:8000/api/v1/user/profile/edit', formData, {

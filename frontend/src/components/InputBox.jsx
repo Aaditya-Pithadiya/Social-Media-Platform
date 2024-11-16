@@ -38,7 +38,7 @@ const InputBox = ({ icon, type, placeholder, value, onChange, required }) => {
         onFocus={handleFocus}
         onBlur={handleBlur}
         required={required}
-        className="w-full p-3 pl-10 rounded-md bg-gray-700 text-white focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 " // Removed shadow effect
+        className="w-full p-3 pl-10 rounded-md bg-gray-700 text-white focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 " // Removed shadow effect
       />
       {/* The label disappears completely when typing starts */}
       <label

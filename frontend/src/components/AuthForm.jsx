@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { FaEnvelope, FaLock, FaUser } from "react-icons/fa";
 import InputBox from "./InputBox"; 
-import logo from "../assets/mylogo.png";
-import logo2 from "../assets/logo2.png";
-import backgroundImage from "../assets/Background.jpg";
-import { ToastContainer, toast } from 'react-toastify';
+import backgroundImage from "../assets/backgroudImage.jpg";
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';  
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { setAuthUser } from '../redux/authSlice';
 import ForgotPasswordDialog from "./ForgotPassword.jsx";
 import OTPVerificationDialog from "./OTPVerification.jsx";
@@ -23,7 +21,7 @@ const AuthForm = () => {
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [signupVerifyOpen, setSignupVerifyOpen] = useState(false);
   const [forgotPasswordOpen, setForgotPasswordOpen] = useState(false);
-  const [otpVerificationOpen, setOtpVerificationOpen] = useState(false); // Added this line
+  const [otpVerificationOpen, setOtpVerificationOpen] = useState(false);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
@@ -47,7 +45,7 @@ const AuthForm = () => {
       });
       if (res.data.success) {
         dispatch(setAuthUser(res.data.user));
-        navigate("/");
+        navigate("/"); 
         toast.success(res.data.message);
         setEmail("");
         setPassword("");
@@ -99,7 +97,6 @@ const AuthForm = () => {
   };
 
   const handleSubmitOTP = (otp) => {
-    // Handle OTP validation logic here
     setOtpVerificationOpen(false);
     toast.success("OTP verified successfully.");
   };
@@ -109,13 +106,10 @@ const AuthForm = () => {
       className="relative flex flex-col items-center justify-center min-h-screen bg-cover bg-center"
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
-      <header className="fixed top-0 left-0 w-full p-4 flex justify-between items-center z-10">
-        <img src={logo2} alt="Logo" className="h-20 w-30 " />
-      </header>
-      <div className="wrapper bg-gray-800 bg-opacity-120 rounded-xl shadow-lg p-8">
+      <div className="wrapper bg-gray-900 bg-opacity-90 rounded-xl shadow-lg p-8">
         {isLoginActive ? (
           <div className="form-box">
-            <h2 className="text-2xl text-white mb-6 text-center">Login</h2>
+            <h2 className="text-3xl text-red-600 mb-6 text-center">Login</h2>
             <form onSubmit={handleLoginSubmit}>
               <InputBox
                 icon={<FaEnvelope />}
@@ -134,20 +128,20 @@ const AuthForm = () => {
                 required
               />
               <div className="flex justify-between mb-4 text-white text-sm">
-                <a className="text-purple-400 cursor-pointer" onClick={handleForgotPassword}>
+                <a className="text-red-400 cursor-pointer" onClick={handleForgotPassword}>
                   Forgot Password?
                 </a>
               </div>
-              <button type="submit" className="w-full bg-purple-700 text-white p-2 rounded-md">Login</button>
+              <button type="submit" className="w-full bg-red-600 text-white p-2 rounded-md">Login</button>
               <div className="mt-4 text-white">
                 Don't have an account? 
-                <a href="#" className="text-purple-400" onClick={() => setIsLoginActive(false)}> Sign up</a>
+                <a href="#" className="text-red-400" onClick={() => setIsLoginActive(false)}> Sign up</a>
               </div>
             </form>
           </div>
         ) : (
           <div className="form-box">
-            <h2 className="text-2xl text-white mb-6 text-center">Sign Up</h2>
+            <h2 className="text-3xl text-red-500 mb-6 text-center">Sign Up</h2>
             <form onSubmit={handleSignupSubmit}>
               <InputBox
                 icon={<FaUser />}
@@ -184,14 +178,14 @@ const AuthForm = () => {
               </div>
               <button 
                 type="submit" 
-                className={`w-full bg-purple-700 text-white p-2 rounded-md ${!termsAccepted ? 'opacity-50 cursor-not-allowed' : ''}`} 
+                className={`w-full bg-red-500 text-white p-2 rounded-md ${!termsAccepted ? 'opacity-50 cursor-not-allowed' : ''}`} 
                 disabled={!termsAccepted}
               >
                 Sign up
               </button>
               <div className="mt-4 text-white">
                 Already have an account? 
-                <a href="#" className="text-purple-400" onClick={() => setIsLoginActive(true)}> Login</a>
+                <a href="#" className="text-red-400" onClick={() => setIsLoginActive(true)}> Login</a>
               </div>
             </form>
           </div>

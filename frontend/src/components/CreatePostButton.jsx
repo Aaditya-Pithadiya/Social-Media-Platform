@@ -21,7 +21,7 @@ const CreatePostButton = () => {
       <div className="fixed bottom-4 left-4 z-20">
         <button
           onClick={handleOpen}
-          className="p-6 bg-purple-600 text-white rounded-full shadow-lg hover:bg-purple-700 transition-all duration-300 flex items-center justify-center"
+          className="p-6 bg-red-600 text-white rounded-full shadow-lg hover:bg-red-500 transition-all duration-300 flex items-center justify-center"
         >
           <AiOutlinePlusSquare className="w-12 h-12" />
         </button>

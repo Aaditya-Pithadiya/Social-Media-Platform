@@ -5,7 +5,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Button } from './ui/button';
 import axios from 'axios';
-import { AtSign, Heart, MessageCircle } from 'lucide-react';
+import { Heart, MessageCircle } from 'lucide-react';
 import user_photo from "../assets/user photo.jpg";
 
 const Profile = () => {
@@ -91,7 +91,7 @@ const Profile = () => {
       <div className="flex flex-col gap-20 p-8 w-full">
         <div className="grid grid-cols-2">
           <section className="flex items-center justify-center">
-            <Avatar className="h-32 w-32 ring-2 ring-purple-700">
+            <Avatar className="h-32 w-32 ring-2 ring-red-700">
               <AvatarImage src={userProfile?.profilePicture} alt="profilephoto" />
               <AvatarFallback className="bg-gray-100">
                 <img src={user_photo} alt="CN" className="h-20 w-20 object-cover" />
@@ -101,44 +101,44 @@ const Profile = () => {
           <section>
             <div className="flex flex-col gap-5">
               <div className="flex items-center gap-2">
-                <span className="text-gray-700 font-bold text-2xl">{userProfile?.username}</span>
+                <span className="text-gray-200 font-bold text-2xl">{userProfile?.username}</span>
               </div>
-              <div className="flex items-center gap-4 text-gray-600 text-sm">
+              <div className="flex items-center gap-4 text-gray-200 text-sm">
                 <p>
-                  <span className="font-semibold text-gray-800">{userProfile?.posts.length} </span>
+                  <span className="font-semibold text-gray-200">{userProfile?.posts.length} </span>
                   posts
                 </p>
                 <p
                   className="cursor-pointer"
                   onClick={() => fetchModalData('followers')}
                 >
-                  <span className="font-semibold text-gray-800">{userProfile?.followers.length} </span>
+                  <span className="font-semibold text-gray-300">{userProfile?.followers.length} </span>
                   followers
                 </p>
                 <p
                   className="cursor-pointer"
                   onClick={() => fetchModalData('following')}
                 >
-                  <span className="font-semibold text-gray-800">{userProfile?.following.length} </span>
+                  <span className="font-semibold text-gray-300">{userProfile?.following.length} </span>
                   following
                 </p>
               </div>
               <div className="flex flex-col gap-1">
-                <span className="font-semibold text-gray-800">{userProfile?.bio || 'bio here...'}</span>
+                <span className="font-semibold text-gray-200">{userProfile?.bio || 'bio here...'}</span>
               </div>
             </div>
 
             <div className="flex gap-4 mt-5">
               {isLoggedInUserProfile ? (
                 <Link to="/account/edit">
-                  <Button className="bg-purple-700 text-white hover:bg-purple-600 w-full md:w-auto h-8">
+                  <Button className="bg-red-700 text-white hover:bg-red-600 w-full md:w-auto h-8">
                     Edit profile
                   </Button>
                 </Link>
               ) : (
                 <Button
                   onClick={handleFollowToggle}
-                  className="bg-purple-700 text-white hover:bg-purple-600 w-full md:w-auto h-8"
+                  className="bg-red-700 text-white hover:bg-red-600 w-full md:w-auto h-8"
                 >
                   {isFollowing ? 'Unfollow' : 'Follow'}
                 </Button>
@@ -151,7 +151,7 @@ const Profile = () => {
           <div className="flex items-center justify-center gap-6 text-sm">
             <span
               className={`py-3 cursor-pointer transition-colors ${
-                activeTab === 'posts' ? 'text-purple-700 font-bold' : 'text-gray-600 hover:text-purple-700'
+                activeTab === 'posts' ? 'text-red-700 font-bold' : 'text-red-600 hover:text-red-700'
               }`}
               onClick={() => handleTabChange('posts')}
             >
@@ -160,7 +160,7 @@ const Profile = () => {
             {isLoggedInUserProfile && (
               <span
                 className={`py-3 cursor-pointer transition-colors ${
-                  activeTab === 'saved' ? 'text-purple-700 font-bold' : 'text-gray-600 hover:text-purple-700'
+                  activeTab === 'saved' ? 'text-red-700 font-bold' : 'text-red-600 hover:text-red-700'
                 }`}
                 onClick={() => handleTabChange('saved')}
               >
@@ -179,12 +179,12 @@ const Profile = () => {
                 />
                 <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl">
                   <div className="flex items-center text-white space-x-4">
-                    <button className="flex items-center gap-2 hover:text-purple-400 transition-colors">
-                      <Heart className="text-white" />
+                    <button className="flex items-center gap-2 hover:text-red-600 transition-colors">
+                      <Heart className="text-white hover:text-red-600" />
                       <span>{post?.likes.length}</span>
                     </button>
-                    <button className="flex items-center gap-2 hover:text-purple-400 transition-colors">
-                      <MessageCircle className="text-white" />
+                    <button className="flex items-center gap-2 hover:text-red-600 transition-colors">
+                      <MessageCircle className="text-white hover:text-red-600" />
                       <span>{post?.comments.length}</span>
                     </button>
                   </div>

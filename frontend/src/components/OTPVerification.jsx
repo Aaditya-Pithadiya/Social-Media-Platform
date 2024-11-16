@@ -35,8 +35,8 @@ console.log(email,otp,password,confirmPassword);
 
   return (
     <Dialog open={open} onClose={() => setOpen(false)}>
-      <DialogContent onInteractOutside={() => setOpen(false)} className="max-w-md p-6 bg-white rounded-lg shadow-lg">
-        <DialogTitle className="text-center text-2xl font-semibold">OTP Verification</DialogTitle>
+      <DialogContent onInteractOutside={() => setOpen(false)} className="max-w-md p-6 bg-gray-800 rounded-lg shadow-lg">
+        <DialogTitle className="text-center text-2xl font-semibold text-gray-200">OTP Verification</DialogTitle>
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Removed the email input field since it's passed as a prop */}
           <Input
@@ -63,7 +63,7 @@ console.log(email,otp,password,confirmPassword);
             value={confirmPassword}  // Bound to confirmPassword state
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
-          <Button type="submit" className="w-full bg-purple-600 text-white">
+          <Button type="submit" className="w-full bg-red-600 text-white">
             Verify & Reset Password
           </Button>
         </form>

@@ -24,7 +24,7 @@ const RightSidebar = () => {
       {/* Menu Button for small screens */}
       <button 
         onClick={toggleSidebar}
-        className="lg:hidden absolute top-4 left-4 p-2 text-purple-600 hover:text-purple-700"
+        className="lg:hidden absolute top-4 left-4 p-2 text-gray-600 hover:text-gray-700"
       >
         {isOpen ? <X size={24} /> : <Menu size={24} />} {/* Toggle between menu and close icons */}
       </button>
@@ -34,15 +34,15 @@ const RightSidebar = () => {
         className={`w-96 my-12 pr-12 lg:w-96 ${isOpen ? 'block' : 'hidden'} lg:block`} 
         // If isOpen is true, show sidebar content on small screens, otherwise hide
       >
-        <div className="bg-purple-50 rounded-lg p-4 shadow-sm mb-6">
+        <div className="bg-gray-50 rounded-lg p-4 shadow-sm mb-6">
           <div className="flex items-center gap-3">
             <Link to={`/profile/${user?._id}`}>
-              <Avatar className="border-2 border-purple-200 hover:border-purple-300 transition-colors">
+              <Avatar className="border-2 border-red-200 hover:border-red-300 transition-colors">
                 <AvatarImage 
                   src={user?.profilePicture} 
                   alt={`${user?.username}'s profile picture`} 
                 />
-                <AvatarFallback className="bg-purple-200 text-purple-700">
+                <AvatarFallback className="bg-gray-200 text-gray-700">
                   {user?.username?.substring(0, 2).toUpperCase() || 
                     <img src={user_photo} alt="CN" className="h-20 w-20 object-cover" />}
                 </AvatarFallback>
@@ -51,11 +51,11 @@ const RightSidebar = () => {
             <div className="flex flex-col">
               <Link 
                 to={`/profile/${user?._id}`}
-                className="font-semibold text-sm text-purple-900 hover:text-purple-700 transition-colors"
+                className="font-semibold text-sm text-gray-900 hover:text-gray-700 transition-colors"
               >
                 {user?.username}
               </Link>
-              <span className="text-purple-600 text-sm">
+              <span className="text-gray-600 text-sm">
                 {user?.bio || 'Bio here...'}
               </span>
             </div>
@@ -66,7 +66,7 @@ const RightSidebar = () => {
         <div className="bg-purple-50 p-4 rounded-lg shadow-sm mb-6">
           <button 
             onClick={toggleSuggestedUsers}
-            className="w-full text-left text-purple-800 font-semibold hover:text-purple-600"
+            className="w-full text-left text-red-700 font-semibold hover:text-red-600"
           >
             Suggested Users
           </button>

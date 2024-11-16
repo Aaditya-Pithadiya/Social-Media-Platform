@@ -175,10 +175,10 @@ const Post = ({ post }) => {
   };
 
   return (
-    <div className="my-8 w-full max-w-md md:max-w-lg lg:max-w-xl mx-auto bg-purple-50 rounded-lg shadow-md p-6">
+    <div className="my-8 w-full max-w-md md:max-w-lg lg:max-w-xl mx-auto bg-gray-50 rounded-lg shadow-md p-6">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <Avatar className="border-2 border-purple-300">
+          <Avatar className="border-2 border-red-300">
             <AvatarImage
               src={post.author?.profilePicture || "defaultProfilePictureUrl"}
               alt="User avatar"
@@ -194,12 +194,12 @@ const Post = ({ post }) => {
           <div className="flex items-center gap-3">
             <h1
               onClick={() => navigateToUserProfile(post.author?._id)}
-              className="font-medium text-purple-900 cursor-pointer"
+              className="font-md text-lg text-gray-900 cursor-pointer"
             >
               {post.author?.username || "Unknown User"}
             </h1>
             {user?._id === post.author?._id && (
-              <Badge className="bg-purple-200 text-purple-700 hover:bg-purple-300">
+              <Badge className="bg-gray-200 text-red-700 hover:bg-gray-300">
                 Author
               </Badge>
             )}
@@ -207,13 +207,13 @@ const Post = ({ post }) => {
         </div>
         <Dialog>
           <DialogTrigger asChild>
-            <MoreHorizontal className="cursor-pointer text-purple-600 hover:text-purple-800" />
+            <MoreHorizontal className="cursor-pointer text-red-600 hover:text-red-800" />
           </DialogTrigger>
-          <DialogContent className="flex flex-col items-center text-sm text-center bg-purple-50">
+          <DialogContent className="flex flex-col items-center text-sm text-center bg-gray-700">
             {user && user._id !== post.author?._id && (
               <Button
                 variant="ghost"
-                className="cursor-pointer w-fit text-purple-700 font-bold hover:bg-purple-100"
+                className="cursor-pointer w-fit text-red-700 font-bold hover:bg-gray-100"
                 onClick={handleFollowToggle}
               >
                 {isFollowing ? "Unfollow" : "Follow"}
@@ -223,7 +223,7 @@ const Post = ({ post }) => {
               <Button
                 onClick={deletePostHandler}
                 variant="ghost"
-                className="cursor-pointer w-fit text-red-600 hover:bg-red-50"
+                className="cursor-pointer w-fit text-red-600 font-bold hover:bg-gray-100"
               >
                 Delete
               </Button>
@@ -244,13 +244,13 @@ const Post = ({ post }) => {
             <FaHeart
               onClick={likeOrDislikeHandler}
               size={28}
-              className="cursor-pointer text-purple-600"
+              className="cursor-pointer text-red-600"
             />
           ) : (
             <FaRegHeart
               onClick={likeOrDislikeHandler}
               size={26}
-              className="cursor-pointer text-purple-600 hover:text-purple-700"
+              className="cursor-pointer text-red-600 hover:text-red-700"
             />
           )}
           <MessageCircle
@@ -258,18 +258,19 @@ const Post = ({ post }) => {
               dispatch(setSelectedPost(post));
               setOpen(true);
             }}
-            className="cursor-pointer text-purple-600 hover:text-purple-700"
+            size={28}
+            className="cursor-pointer text-red-600 hover:text-red-700"
           />
         </div>
         <div className="flex items-center justify-between my-4">
             <FaRegBookmark
               onClick={bookmarkHandler}
-              className="cursor-pointer text-purple-700"
+              className="cursor-pointer text-red-600"
               size={26}
             />
         </div>
       </div>
-      <span className="font-medium text-purple-900 block mb-2">
+      <span className="font-medium text-gray-900 block mb-2">
                 {postLike} likes
             </span>
       {comment.length > 0 && (
@@ -278,23 +279,23 @@ const Post = ({ post }) => {
             dispatch(setSelectedPost(post));
             setOpen(true);
           }}
-          className="text-sm text-purple-400 hover:text-purple-600 cursor-pointer"
+          className="text-sm text-gray-400 hover:text-gray-600 cursor-pointer"
         >
           View all {comment.length} comments
         </span>
       )}
-      <div className="flex items-center justify-between mt-4 border-t border-purple-200 pt-4">
+      <div className="flex items-center justify-between mt-4 border-t border-gray-200 pt-4">
         <input
           type="text"
           placeholder="Add a comment..."
           value={text}
           onChange={changeEventHandler}
-          className="outline-none text-sm w-full bg-transparent text-purple-900 placeholder-purple-400"
+          className="outline-none text-sm w-full bg-transparent text-purple-900 placeholder-gray-400"
         />
         {text && (
           <span
             onClick={commentHandler}
-            className="text-purple-600 hover:text-purple-800 cursor-pointer font-medium"
+            className="text-red-600 hover:text-red-700 cursor-pointer font-medium"
           >
             Post
           </span>
