@@ -277,20 +277,40 @@ export const editProfile = async (req, res) => {
 };
 export const getSuggestedUsers = async (req, res) => {
     try {
-        const suggestedUsers = await User.find({ _id: { $ne: req.id } }).select("-password");
-        if (!suggestedUsers) {
+        // Get the logged-in user's ID and their list of followed users
+        const loggedInUser = await User.findById(req.id).select("following");
+        if (!loggedInUser) {
+            return res.status(404).json({
+                message: 'User not found',
+            });
+        }
+
+        // Exclude logged-in user and their followed users
+        const suggestedUsers = await User.find({
+            _id: { 
+                $ne: req.id, // Exclude the logged-in user
+                $nin: loggedInUser.following // Exclude followed users
+            }
+        }).select("-password");
+
+        if (!suggestedUsers || suggestedUsers.length === 0) {
             return res.status(400).json({
-                message: 'Currently do not have any users',
-            })
-        };
+                message: 'Currently do not have any suggested users',
+            });
+        }
+
         return res.status(200).json({
             success: true,
             users: suggestedUsers
-        })
+        });
     } catch (error) {
         console.log(error);
+        return res.status(500).json({
+            message: 'An error occurred',
+        });
     }
 };
+
 
 export const followOrUnfollow = async (req, res) => {
     try {
