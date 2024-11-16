@@ -7,9 +7,8 @@ const SuggestedUsers = () => {
     const { suggestedUsers } = useSelector(store => store.auth);
 
     return (
-        <div className="my-10 bg-purple-50 rounded-lg p-4 shadow-sm">
+        <div className="my-1 bg-purple-50 rounded-lg p-2 shadow-sm">
             <div className="flex items-center justify-between text-sm mb-6">
-                <h1 className="font-semibold text-purple-900">Suggested for you</h1>
             </div>
 
             {suggestedUsers.map((user) => (

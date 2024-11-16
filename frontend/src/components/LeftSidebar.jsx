@@ -14,6 +14,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { logout } from "../redux/authSlice";
 
 const TopNavbar = () => {
   // const [activeItem, setActiveItem] = useState("Home");
@@ -58,7 +59,7 @@ const TopNavbar = () => {
   }, [searchQuery]);
 
   const handleLogOut = () => {
-    // Perform logout action here
+    dispatch(logout())
     toast.success("Logged out successfully");
     navigate("/login");
     setLogoutConfirmOpen(false); // Close the confirmation dialog

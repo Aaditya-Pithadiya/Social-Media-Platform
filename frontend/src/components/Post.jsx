@@ -1,4 +1,5 @@
-import user_photo from "../assets/user photo.jpg"; // Fixed file name syntax
+import user_photo from "../assets/user photo.jpg";
+// Fixed file name syntax
 import useGetUserProfile from "../hooks/useGetUserProfile";
 import { setPosts, setSelectedPost } from "../redux/postSlice";
 import CommentDialog from "./CommentDialog";
@@ -9,12 +10,7 @@ import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
 import axios from "axios";
 import { MessageCircle, MoreHorizontal } from "lucide-react";
 import React, { useState, useEffect } from "react";
-import {
-  FaHeart,
-  FaRegHeart,
-  FaBookmark,
-  FaRegBookmark,
-} from "react-icons/fa";
+import { FaHeart, FaRegHeart, FaBookmark, FaRegBookmark } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -62,7 +58,6 @@ const Post = ({ post }) => {
         }
       );
       if (res.data.success) {
-        setIsBookmarked(!isBookmarked);
         toast.success(res.data.message);
 
         setUserProfile((prevProfile) => ({
@@ -180,7 +175,7 @@ const Post = ({ post }) => {
   };
 
   return (
-    <div className="my-8 w-full max-w-sm mx-auto bg-purple-50 rounded-lg shadow-md p-4">
+    <div className="my-8 w-full max-w-md md:max-w-lg lg:max-w-xl mx-auto bg-purple-50 rounded-lg shadow-md p-6">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Avatar className="border-2 border-purple-300">
@@ -248,13 +243,13 @@ const Post = ({ post }) => {
           {liked ? (
             <FaHeart
               onClick={likeOrDislikeHandler}
-              size={24}
+              size={28}
               className="cursor-pointer text-purple-600"
             />
           ) : (
             <FaRegHeart
               onClick={likeOrDislikeHandler}
-              size={22}
+              size={26}
               className="cursor-pointer text-purple-600 hover:text-purple-700"
             />
           )}
@@ -267,22 +262,44 @@ const Post = ({ post }) => {
           />
         </div>
         <div className="flex items-center justify-between my-4">
-          {isBookmarked ? (
-            <FaBookmark
-              onClick={bookmarkHandler}
-              className="cursor-pointer text-purple-700"
-              size={22}
-            />
-          ) : (
             <FaRegBookmark
               onClick={bookmarkHandler}
               className="cursor-pointer text-purple-700"
-              size={22}
+              size={26}
             />
-          )}
         </div>
       </div>
-      <div className="text-xs font-medium">{postLike} likes</div>
+      <span className="font-medium text-purple-900 block mb-2">
+                {postLike} likes
+            </span>
+      {comment.length > 0 && (
+        <span
+          onClick={() => {
+            dispatch(setSelectedPost(post));
+            setOpen(true);
+          }}
+          className="text-sm text-purple-400 hover:text-purple-600 cursor-pointer"
+        >
+          View all {comment.length} comments
+        </span>
+      )}
+      <div className="flex items-center justify-between mt-4 border-t border-purple-200 pt-4">
+        <input
+          type="text"
+          placeholder="Add a comment..."
+          value={text}
+          onChange={changeEventHandler}
+          className="outline-none text-sm w-full bg-transparent text-purple-900 placeholder-purple-400"
+        />
+        {text && (
+          <span
+            onClick={commentHandler}
+            className="text-purple-600 hover:text-purple-800 cursor-pointer font-medium"
+          >
+            Post
+          </span>
+        )}
+      </div>
       <CommentDialog open={open} setOpen={setOpen} post={post} />
     </div>
   );
