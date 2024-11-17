@@ -41,6 +41,10 @@ const Post = ({ post }) => {
     setUserProfile(globalUserProfile);
   }, [globalUserProfile]);
 
+  useEffect(() => {
+    setIsBookmarked(userProfile?.bookmarks.includes(post._id));
+  }, [userProfile, post._id]);
+
   const changeEventHandler = (e) => {
     setText(e.target.value.trim());
   };
@@ -57,17 +61,20 @@ const Post = ({ post }) => {
           withCredentials: true,
         }
       );
+
       if (res.data.success) {
         toast.success(res.data.message);
 
+        const updatedBookmarks = isBookmarked
+          ? userProfile.bookmarks.filter((bookmarkId) => bookmarkId !== post._id)
+          : [...userProfile.bookmarks, post._id];
+
         setUserProfile((prevProfile) => ({
           ...prevProfile,
-          bookmarks: isBookmarked
-            ? prevProfile.bookmarks.filter(
-                (bookmarkId) => bookmarkId !== post._id
-              )
-            : [...prevProfile.bookmarks, post._id],
+          bookmarks: updatedBookmarks,
         }));
+
+        setIsBookmarked(!isBookmarked);
       }
     } catch (error) {
       console.error("Error bookmarking post:", error);
@@ -263,16 +270,24 @@ const Post = ({ post }) => {
           />
         </div>
         <div className="flex items-center justify-between my-4">
+          {isBookmarked ? (
+            <FaBookmark
+              onClick={bookmarkHandler}
+              className="cursor-pointer text-red-600"
+              size={26}
+            />
+          ) : (
             <FaRegBookmark
               onClick={bookmarkHandler}
               className="cursor-pointer text-red-600"
               size={26}
             />
+          )}
         </div>
       </div>
       <span className="font-medium text-gray-900 block mb-2">
-                {postLike} likes
-            </span>
+        {postLike} likes
+      </span>
       {comment.length > 0 && (
         <span
           onClick={() => {
