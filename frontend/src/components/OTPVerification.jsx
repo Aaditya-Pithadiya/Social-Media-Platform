@@ -21,7 +21,7 @@ const OTPVerificationDialog = ({ open, setOpen}) => {
     }
 console.log(email,otp,password,confirmPassword);
     try {
-      const res = await axios.post('http://localhost:8000/api/v1/user/verifyUpdate', { 
+      const res = await axios.post('https://social-media-platform-0937.onrender.com/api/v1/user/verifyUpdate', { 
         email:email, otp:otp, password:password, confirmPassword:confirmPassword });
       console.log(email,otp,password,confirmPassword);
       if (res.data.success) {

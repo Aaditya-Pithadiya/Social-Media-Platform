@@ -12,7 +12,7 @@ const ForgotPasswordDialog = ({ open, setOpen, setOtpVerificationOpen }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:8000/api/v1/user/sendotp', { email });
+      await axios.post('https://social-media-platform-0937.onrender.com/api/v1/user/sendotp', { email });
       toast.success("OTP sent to your email.");
       setOpen(false); // Close Forgot Password Dialog
       setEmail("");

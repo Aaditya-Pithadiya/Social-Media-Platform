@@ -61,7 +61,7 @@ function App() {
   useEffect(() => {
     if (user) {
       // Initialize WebSocket connection
-      socketInstance = io('http://localhost:8000', {
+      socketInstance = io('https://social-media-platform-0937.onrender.com', {
         query: { userId: user?._id },
         transports: ['websocket'],
       });

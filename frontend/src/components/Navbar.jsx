@@ -37,7 +37,7 @@ const TopNavbar = () => {
       }
       try {
         const response = await axios.get(
-          `http://localhost:8000/api/v1/user/search`,
+          `https://social-media-platform-0937.onrender.com/api/v1/user/search`,
           {
             params: { query: searchQuery },
             withCredentials: true,

@@ -39,7 +39,7 @@ const AuthForm = () => {
     try {
       setLoading(true);
       const input = { email, password }; 
-      const res = await axios.post('http://localhost:8000/api/v1/user/login', input, {
+      const res = await axios.post('https://social-media-platform-0937.onrender.com/api/v1/user/login', input, {
         headers: { 'Content-Type': 'application/json' },
         withCredentials: true
       });
@@ -63,7 +63,7 @@ const AuthForm = () => {
     try {
       setLoading(true);
       const input = { "username" :username, "email" : email, "password" : password };
-      const res = await axios.post('http://localhost:8000/api/v1/user/register', input, {
+      const res = await axios.post('https://social-media-platform-0937.onrender.com/api/v1/user/register', input, {
         headers: { 'Content-Type': 'application/json' },
         withCredentials: true
       });

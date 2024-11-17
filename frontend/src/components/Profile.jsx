@@ -35,7 +35,7 @@ const Profile = () => {
   const handleFollowToggle = async () => {
     try {
       const response = await axios.post(
-        `http://localhost:8000/api/v1/user/followorunfollow/${userId}`,
+        `https://social-media-platform-0937.onrender.com/api/v1/user/followorunfollow/${userId}`,
         {},
         { withCredentials: true }
       );
@@ -56,7 +56,7 @@ const Profile = () => {
 
   const fetchModalData = async (type) => {
     try {
-      const endpoint = `http://localhost:8000/api/v1/user/${userId}/${type}`;
+      const endpoint = `https://social-media-platform-0937.onrender.com/api/v1/user/${userId}/${type}`;
       const response = await axios.get(endpoint, { withCredentials: true });
       if (response.data.success) {
         setModalData(response.data[type]); // followers or following
