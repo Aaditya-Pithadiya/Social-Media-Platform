@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import TopNavbar from "./LeftSidebar"; // Keep the sidebar or top navbar as TopNavbar
+import TopNavbar from "./Navbar"; //  
 import CreatePostButton from "./CreatePostButton";
 import { useSelector } from "react-redux";
 

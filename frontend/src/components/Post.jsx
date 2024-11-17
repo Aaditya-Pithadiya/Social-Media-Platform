@@ -175,7 +175,7 @@ const Post = ({ post }) => {
   };
 
   return (
-    <div className="my-8 w-full max-w-md md:max-w-lg lg:max-w-xl mx-auto bg-gray-50 rounded-lg shadow-md p-6">
+    <div className="my-8 w-full max-w-md  mx-auto bg-gray-50 rounded-lg shadow-md p-6">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Avatar className="border-2 border-red-300">
