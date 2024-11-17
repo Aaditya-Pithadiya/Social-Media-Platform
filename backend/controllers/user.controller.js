@@ -4,160 +4,169 @@ import jwt from "jsonwebtoken";
 import getDataUri from "../utils/datauri.js";
 import cloudinary from "../utils/cloudinary.js";
 import { Post } from "../models/post.model.js";
-import { SendVerificationCode, welcomeEmail } from '../middlewares/Email.js'
+import { SendVerificationCode, welcomeEmail } from '../middlewares/Email.js';
+import { Types } from "mongoose";
 
 export const register = async (req, res) => {
     try {
         const { username, email, password } = req.body;
+
         if (!username || !email || !password) {
-            return res.status(401).json({
-                message: "Something is missing, please check!",
+            return res.status(400).json({ message: "All fields are required.", success: false });
+        }
+
+        if (!/^[a-zA-Z0-9]+$/.test(username) ) {
+            return res.status(400).json({
+                message: "Username can only contain letters and numbers.",
                 success: false,
             });
         }
-        const ExistUser = await User.findOne({ email });
-        if (ExistUser) {
-            return res.status(401).json({
-                message: "Try different email",
-                success: false,
-            });
-        };
-        const ExistUserByUsername = await User.findOne({ username });
-        if (ExistUserByUsername) {
-            return res.status(401).json({
-                message: "Username already exists. Try a different one.",
+        if(username.length > 15){
+            return res.status(400).json({
+                message : "Username can be of max length 15.",
+                success : false
+            })
+        }
+
+        if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/.test(password)) {
+            return res.status(400).json({
+                message: "Password must be at least 8 characters long, include a number, special character, uppercase, and lowercase letter.",
                 success: false,
             });
         }
+
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ message: "Email already in use.", success: false });
+        }
+
+        const existingUsername = await User.findOne({ username });
+        if (existingUsername) {
+            return res.status(400).json({ message: "Username already in use.", success: false });
+        }
+
         const hashedPassword = await bcrypt.hash(password, 15);
-        const verificationCode = Math.floor(100000 + Math.random()*900000).toString()
+        const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+        const verificationExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
+
         const user = new User({
             email,
-            password : hashedPassword,
             username,
-            verificationCode
-        })
+            password: hashedPassword,
+            verificationCode,
+            verificationExpires
+        });
 
-        await user.save()
-        SendVerificationCode(user.email,verificationCode)
+        await user.save();
+        SendVerificationCode(user.email, verificationCode);
 
         return res.status(201).json({
-            message: "Account created successfully.",
+            message: "Account created successfully. Please verify your email.",
             success: true,
-            user
         });
     } catch (error) {
-        console.log(error);
+        console.error(error);
+        res.status(500).json({ message: "Internal server error.", success: false });
     }
-}
+};
 
 export const Verifyemail = async (req, res) => {
     try {
         const { email, otp } = req.body;
 
-        console.log(otp);
-
         if (!email || !otp) {
-            return res.status(400).json({ success: false, message: "Email and code are required" });
+            return res.status(400).json({ message: "Email and OTP are required.", success: false });
         }
 
-        // Find user by email and verification code
         const user = await User.findOne({ email, verificationCode: otp });
 
-        if (!user) {
-            // If no user is found with the given email and code, delete the unverified user with that email
+        if (!user || Date.now() > user.verificationExpires) {
             await User.deleteOne({ email, isVerified: false });
-            return res.status(400).json({ success: false, message: "Invalid or expired code. User removed from database." });
+            return res.status(400).json({
+                message: "Invalid or expired code. User has been removed.",
+                success: false,
+            });
         }
 
-        // If the code is correct, verify the user
         user.isVerified = true;
-        user.verificationExpires=null;
-        user.verificationCode = undefined; // Clear the verification code after successful verification
+        user.verificationExpires = null;
+        user.verificationCode = undefined;
         await user.save();
-        await welcomeEmail(user.email, user.name);
 
-        return res.status(200).json({ success: true, message: "Email verified!" });
+        welcomeEmail(user.email, user.username);
+
+        return res.status(200).json({ message: "Email verified successfully!", success: true });
     } catch (error) {
-        console.log(error);
-        res.status(500).json({ success: false, message: "Server error" });
+        console.error(error);
+        res.status(500).json({ message: "Internal server error.", success: false });
     }
 };
 
+export const forgotpassword = async (req, res) => {
+    try {
+        const { email } = req.body;
 
-export const forgotpassword = async(req,res)=>{
-    try{
-           const {email} = req.body;
+        if (!email) {
+            return res.status(400).json({ message: "Email is required.", success: false });
+        }
 
-           if(!email){
-            return res.status(400).json({ success: false, message: "Email are required" }); 
-           }
-           const user = await User.findOne({email});
+        const user = await User.findOne({ email });
 
-           if(!user){
-            return res.status(400).json({ success: false, message: "No user exist" });
-            
-           }
+        if (!user || !user.isVerified) {
+            return res.status(400).json({ message: "Email not found or not verified.", success: false });
+        }
 
-           if(!user.isVerified){
-            return res.status(400).json({ success: false, message: "Email has not verified" });
-           }
-           
-           user.verificationCode = Math.floor(100000 + Math.random()*900000).toString();
-          // console.log(user.verificationCode);
-           await user.save();
-           await SendVerificationCode(user.email,user.verificationCode);
+        user.verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+        user.verificationExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
+        await user.save();
 
-           return res.status(200).json({success:true,message:"otp sent!"})
+        SendVerificationCode(user.email, user.verificationCode);
+
+        return res.status(200).json({ message: "OTP sent to your email.", success: true });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal server error.", success: false });
     }
-    catch(error){
-        console.log(error);
-        res.status(500).json({ success: false, message: "Server error" });
-    }
-}
+};
 
 export const Verifyotp = async (req, res) => {
     try {
-        
-        const { email, otp ,password,confirmPassword} = req.body;
-        console.log(email,otp,password,confirmPassword);
+        const { email, otp, password, confirmPassword } = req.body;
+
         if (!email || !otp || !password || !confirmPassword) {
-            return res.status(400).json({ success: false, message: "Email and code are required" });
+            return res.status(400).json({ message: "All fields are required.", success: false });
         }
-   
-        // Find user by email and verification code
+
         const user = await User.findOne({ email, verificationCode: otp });
 
-        if (!user) {
-            return res.status(400).json({ success: false, message: "Invalid or expired code." });
-        }
-
-        if (!user.isVerified) {
-            return res.status(400).send({ success: false, message: "Your email is not verified" });
+        if (!user || Date.now() > user.verificationExpires) {
+            return res.status(400).json({ message: "Invalid or expired OTP.", success: false });
         }
 
         if (password !== confirmPassword) {
-            return res.status(400).send("Passwords do not match.");
+            return res.status(400).json({ message: "Passwords do not match.", success: false });
         }
 
-        user.verificationCode = undefined; // Clear the verification code after successful verification
+        if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/.test(password)) {
+            return res.status(400).json({
+                message: "Password must meet the required criteria.",
+                success: false,
+            });
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 15);
+        user.password = hashedPassword;
+        user.verificationCode = undefined;
+        user.verificationExpires = null;
         await user.save();
 
-        const hashPassword = await bcrypt.hash(confirmPassword,10)
-
-        await User.updateOne({ email }, { password:  hashPassword});
-
-        //checking
-        const Userchk = await User.findOne({ email });
-        //console.log(Userchk.password);
-       
-        return res.status(200).json({success:true, message:"Password Changed succesfully"})
-
+        return res.status(200).json({ message: "Password changed successfully.", success: true });
     } catch (error) {
-        console.log(error);
-        res.status(500).json({ success: false, message: "Server error" });
+        console.error(error);
+        res.status(500).json({ message: "Internal server error.", success: false });
     }
 };
+
 
 export const login = async (req, res) => {
     try {
@@ -230,13 +239,22 @@ export const logout = async (_, res) => {
 export const getProfile = async (req, res) => {
     try {
         const userId = req.params.id;
-        let user = await User.findById(userId).populate({path:'posts', createdAt:-1}).populate('bookmarks');
+
+        if (!userId || !Types.ObjectId.isValid(userId)) {
+            return res.status(400).json({
+                error: "Invalid or missing User ID",
+                success: false
+            });
+        }
+
+        let user = await User.findById(userId).populate({ path: 'posts', createdAt: -1 }).populate('bookmarks');
         return res.status(200).json({
             user,
             success: true
         });
     } catch (error) {
         console.log(error);
+        res.status(500).json({ message: "Internal server error.", success: false });
     }
 };
 
@@ -246,6 +264,13 @@ export const editProfile = async (req, res) => {
         const { bio, gender } = req.body;
         const profilePicture = req.file;
         let cloudResponse;
+
+        if (!userId  || !Types.ObjectId.isValid(userId)) {
+            return res.status(400).json({
+                error: "Invalid or missing User ID",
+                success: false
+            });
+        }
 
         if (profilePicture) {
             const fileUri = getDataUri(profilePicture);
