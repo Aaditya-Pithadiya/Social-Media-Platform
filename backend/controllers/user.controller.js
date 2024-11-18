@@ -7,6 +7,20 @@ import { Post } from "../models/post.model.js";
 import { SendVerificationCode, welcomeEmail } from '../middlewares/Email.js';
 import { Types } from "mongoose";
 
+import axios from 'axios';
+
+const EMAIL_VALIDATION_API_KEY = process.env.EMAIL_VALIDATION_API_KEY; 
+
+const validateEmail = async (email) => {
+    try {
+        const response = await axios.get(`https://emailvalidation.abstractapi.com/v1/?api_key=${EMAIL_VALIDATION_API_KEY}&email=${email}`);
+        return response.data.is_valid_format.value && response.data.deliverability === 'DELIVERABLE';
+    } catch (error) {
+        console.error('Email validation error:', error);
+        return false; 
+    }
+};
+
 export const register = async (req, res) => {
     try {
         const { username, email, password } = req.body;
@@ -15,39 +29,21 @@ export const register = async (req, res) => {
             return res.status(400).json({ message: "All fields are required.", success: false });
         }
 
-        if (!/^[a-zA-Z0-9]+$/.test(username) ) {
-            return res.status(400).json({
-                message: "Username can only contain letters and numbers.",
-                success: false,
-            });
-        }
-        if(username.length > 15){
-            return res.status(400).json({
-                message : "Username can be of max length 15.",
-                success : false
-            })
+        
+        const isEmailValid = await validateEmail(email);
+        if (!isEmailValid) {
+            return res.status(400).json({ message: "Please enter a valid email address.", success: false });
         }
 
-        if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/.test(password)) {
-            return res.status(400).json({
-                message: "Password must be at least 8 characters long, include a number, special character, uppercase, and lowercase letter.",
-                success: false,
-            });
-        }
-
+        
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(400).json({ message: "Email already in use.", success: false });
         }
 
-        const existingUsername = await User.findOne({ username });
-        if (existingUsername) {
-            return res.status(400).json({ message: "Username already in use.", success: false });
-        }
-
         const hashedPassword = await bcrypt.hash(password, 15);
         const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-        const verificationExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
+        const verificationExpires = Date.now() +  90 * 1000;
 
         const user = new User({
             email,
@@ -69,6 +65,7 @@ export const register = async (req, res) => {
         res.status(500).json({ message: "Internal server error.", success: false });
     }
 };
+
 
 export const Verifyemail = async (req, res) => {
     try {
@@ -117,7 +114,7 @@ export const forgotpassword = async (req, res) => {
         }
 
         user.verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-        user.verificationExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
+        
         await user.save();
 
         SendVerificationCode(user.email, user.verificationCode);
@@ -139,8 +136,8 @@ export const Verifyotp = async (req, res) => {
 
         const user = await User.findOne({ email, verificationCode: otp });
 
-        if (!user || Date.now() > user.verificationExpires) {
-            return res.status(400).json({ message: "Invalid or expired OTP.", success: false });
+        if (!user) {
+            return res.status(400).json({ message: "Invalid OTP.", success: false });
         }
 
         if (password !== confirmPassword) {
@@ -157,7 +154,6 @@ export const Verifyotp = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 15);
         user.password = hashedPassword;
         user.verificationCode = undefined;
-        user.verificationExpires = null;
         await user.save();
 
         return res.status(200).json({ message: "Password changed successfully.", success: true });
@@ -177,6 +173,7 @@ export const login = async (req, res) => {
                 success: false,
             });
         }
+        
         let user = await User.findOne({ email });
         if (!user) {
             return res.status(401).json({
@@ -184,6 +181,13 @@ export const login = async (req, res) => {
                 success: false,
             });
         }
+        if(!user.isVerified){
+            return res.status(401).json({
+                message: "User is not Verified !!!!!" ,
+                success: false,
+            });
+        }
+
         const isPasswordMatch = await bcrypt.compare(password, user.password);
         if (!isPasswordMatch) {
             return res.status(401).json({

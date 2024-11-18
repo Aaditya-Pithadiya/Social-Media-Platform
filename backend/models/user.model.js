@@ -19,21 +19,13 @@ const userSchema = new mongoose.Schema(
         password: {
             type: String,
             required: true,
-            // validate: {
-            //     validator: function (value) {
-            //         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/;
-            //         return passwordRegex.test(value);
-            //     },
-            //     message:
-            //         "Password must be at least 8 characters long, include at least one number, one special character, one uppercase letter, and one lowercase letter."
-            // }
         },
         profilePicture: { type: String, default: '' },
         bio: { type: String, default: '' },
         gender: { type: String, enum: ['male', 'female'] },
         isVerified: { type: Boolean, default: false },
         verificationCode: { type: String },
-        verificationExpires: { type: Date },
+        verificationExpires: { type: Date, index: {expires: 0} },
         followers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
         following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
         posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],

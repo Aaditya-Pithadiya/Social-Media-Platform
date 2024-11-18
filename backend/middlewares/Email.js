@@ -1,21 +1,22 @@
 import { transporter } from "./Email.config.js";
 
 
-export const SendVerificationCode = async(email,verificationCode)=>{
-    try{
+export const SendVerificationCode = async (email, verificationCode) => {
+    try {
         const response = await transporter.sendMail({
             from: '"TheGroup14" <kenilsarang@gmail.com>', // sender address
             to: email, // list of receivers
             subject: "OTP verification code", // Subject line
             text: "Verify your Email", // plain text body
-            html: verificationCode, // html body
+            html: `<p>Your verification code is <b>${verificationCode}</b></p>`, // HTML body
         });
-        console.log('Email send Successfully',response)
+        console.log("Email sent successfully:", response);
+    } catch (error) {
+        console.error("Failed to send email:", error);
+        throw new Error("Failed to send email");
     }
-    catch(error){
-        console.log('Email error')
-    }
-}
+};
+
 export const welcomeEmail = async(email,verificationCode)=>{
     try{
         const response = await transporter.sendMail({
