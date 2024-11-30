@@ -29,21 +29,31 @@ export const register = async (req, res) => {
             return res.status(400).json({ message: "All fields are required.", success: false });
         }
 
-        
         const isEmailValid = await validateEmail(email);
         if (!isEmailValid) {
             return res.status(400).json({ message: "Please enter a valid email address.", success: false });
         }
 
-        
-        const existingUser = await User.findOne({ email });
-        if (existingUser) {
+        const existingEmail = await User.findOne({ email });
+        if (existingEmail) {
             return res.status(400).json({ message: "Email already in use.", success: false });
         }
 
-        const hashedPassword = await bcrypt.hash(password, 15);
+        const existingUsername = await User.findOne({ username });
+        if (existingUsername) {
+            return res.status(400).json({ message: "Username already in use.", success: false });
+        }
+
+        if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/.test(password)) {
+            return res.status(400).json({
+                message: "Password must include uppercase,lowercase,special Characters and numbers",
+                success: false,
+            });
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 5);
         const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-        const verificationExpires = Date.now() +  90 * 1000;
+        const verificationExpires = Date.now() + 90 * 1000;
 
         const user = new User({
             email,
@@ -65,7 +75,6 @@ export const register = async (req, res) => {
         res.status(500).json({ message: "Internal server error.", success: false });
     }
 };
-
 
 export const Verifyemail = async (req, res) => {
     try {
@@ -151,7 +160,7 @@ export const Verifyotp = async (req, res) => {
             });
         }
 
-        const hashedPassword = await bcrypt.hash(password, 15);
+        const hashedPassword = await bcrypt.hash(password, 5);
         user.password = hashedPassword;
         user.verificationCode = undefined;
         await user.save();

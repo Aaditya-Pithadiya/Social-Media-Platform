@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FaEnvelope, FaLock, FaUser } from "react-icons/fa";
 import InputBox from "./InputBox"; 
-import backgroundImage from "../assets/backgroudImage.jpg";
+import backgroundImage from "../assets/backgroundImage.jpg";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from "react-router-dom";
@@ -11,6 +11,7 @@ import { setAuthUser } from '../redux/authSlice';
 import ForgotPasswordDialog from "./ForgotPassword.jsx";
 import OTPVerificationDialog from "./OTPVerification.jsx";
 import SignUpVerifyDialog from "./SignUpVerify";
+import logo from "../assets/logo.png";
 
 const AuthForm = () => {
   const [isLoginActive, setIsLoginActive] = useState(true);
@@ -106,7 +107,12 @@ const AuthForm = () => {
       className="relative flex flex-col items-center justify-center min-h-screen bg-cover bg-center"
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
-      <div className="wrapper bg-gray-900 bg-opacity-90 rounded-xl shadow-lg p-8">
+     <div className="absolute top-0 left-0 p-4">
+        <img src={logo} alt="logo" className="w-64 h-auto" />
+     </div>
+
+
+      <div className="wrapper bg-gray-900 bg-opacity-120 rounded-xl shadow-lg p-8">
         {isLoginActive ? (
           <div className="form-box">
             <h2 className="text-3xl text-red-600 mb-6 text-center">Login</h2>

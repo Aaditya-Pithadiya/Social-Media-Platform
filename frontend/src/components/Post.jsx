@@ -220,7 +220,7 @@ const Post = ({ post }) => {
             {user && user._id !== post.author?._id && (
               <Button
                 variant="ghost"
-                className="cursor-pointer w-fit text-red-700 font-bold hover:bg-gray-100"
+                className="cursor-pointer w-fit text-gray-300 font-bold hover:bg-gray-100"
                 onClick={handleFollowToggle}
               >
                 {isFollowing ? "Unfollow" : "Follow"}
@@ -230,7 +230,7 @@ const Post = ({ post }) => {
               <Button
                 onClick={deletePostHandler}
                 variant="ghost"
-                className="cursor-pointer w-fit text-red-600 font-bold hover:bg-gray-100"
+                className="cursor-pointer w-fit text-gray-300 font-bold hover:bg-gray-100"
               >
                 Delete
               </Button>
@@ -270,19 +270,13 @@ const Post = ({ post }) => {
           />
         </div>
         <div className="flex items-center justify-between my-4">
-          {isBookmarked ? (
-            <FaBookmark
-              onClick={bookmarkHandler}
-              className="cursor-pointer text-red-600"
-              size={26}
-            />
-          ) : (
+          
             <FaRegBookmark
               onClick={bookmarkHandler}
               className="cursor-pointer text-red-600"
               size={26}
             />
-          )}
+          
         </div>
       </div>
       <span className="font-medium text-gray-900 block mb-2">

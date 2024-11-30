@@ -67,6 +67,7 @@ const SignUpVerifyDialog = ({ open, setOpen, onSubmitEmail,email}) => {
             <Input type="text" placeholder="Enter OTP sent to your email" value={otp} onChange={(e) => setOtp(e.target.value)} required />
           </div>
           {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+          <p className="text-red-700 text-center">OTP will be valid for 90 seconds</p>
           <Button type="submit" disabled={isLoading} className="w-full bg-red-500 text-white p-2 rounded-md hover:bg-red-600">
             {isLoading ? "Verifying..." : "Submit"}
           </Button>

@@ -69,6 +69,7 @@ console.log(email,otp,password,confirmPassword);
             value={confirmPassword}  // Bound to confirmPassword state
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
+          <p className="text-red-700 text-center">OTP will be valid for 90 seconds</p>
           <Button type="submit" className="w-full bg-red-600 text-white">
           {loading ? "Verifying..." : "Verify & Reset Password"} 
           </Button>

@@ -11,16 +11,18 @@ import { useDispatch, useSelector } from "react-redux";
 
 const ChatPage = () => {
   const [textMessage, setTextMessage] = useState("");
-  const { userProfile, suggestedUsers, selectedUser } = useSelector(
+  const {user, suggestedUsers, selectedUser } = useSelector(
     (store) => store.auth
   ); // Getting userProfile
   const { onlineUsers, messages } = useSelector((store) => store.chat);
   const dispatch = useDispatch();
 
   // Filter suggested users to include only those the user is following
-  const followingUsers = suggestedUsers.filter((user) =>
-    userProfile?.following?.includes(user._id)
+  const followingUsers = suggestedUsers.filter((suggestedUser) =>
+    user?.following?.includes(suggestedUser._id)
   );
+console.log("Following IDs:", user?.following); // Should print an array of strings
+console.log("Suggested User IDs:", suggestedUsers.map((u) => u._id)); // Should print an array of strings
 
   const sendMessageHandler = async (receiverId) => {
     try {
@@ -54,7 +56,7 @@ const ChatPage = () => {
       {/* Sidebar - Users List */}
       <section className="w-1/4 sticky bg-gray-900 p-4 h-full overflow-y-auto border border-gray-300">
         <h1 className="font-bold mb-4 text-xl text-gray-100">
-          {userProfile?.username}
+          {user?.username}
         </h1>
         <hr className="mb-4 border-gray-700" />
         <div className="overflow-y-auto h-[80vh] space-y-3">

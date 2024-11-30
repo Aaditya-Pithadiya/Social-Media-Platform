@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import CreatePost from './CreatePost';
-import { AiOutlinePlusSquare } from 'react-icons/ai';
+import { FaPlus } from "react-icons/fa";
 
 const CreatePostButton = () => {
   const [open, setOpen] = useState(false);
@@ -23,7 +23,7 @@ const CreatePostButton = () => {
           onClick={handleOpen}
           className="p-6 bg-red-600 text-white rounded-full shadow-lg hover:bg-red-500 transition-all duration-300 flex items-center justify-center"
         >
-          <AiOutlinePlusSquare className="w-12 h-12" />
+          <FaPlus className="w-12 h-12" />
         </button>
       </div>
 

@@ -1,5 +1,4 @@
 import user_photo from "../assets/user photo.jpg";
-import CreatePost from "./CreatePost";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import * as Popover from "@radix-ui/react-popover";
 import axios from "axios";
@@ -236,7 +235,7 @@ const TopNavbar = () => {
             {dropdownOpen && (
               <div className="absolute top-full right-0 w-48 bg-gray-800 rounded-lg shadow-lg mt-2 z-10">
                 <button
-                  onClick={() => navigate("/profile")}
+                  onClick={() => navigate("/profile/${user?._id}")}
                   className="w-full px-4 py-2 text-left text-white hover:bg-gray-700"
                 >
                   View Profile
