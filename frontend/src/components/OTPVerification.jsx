@@ -10,10 +10,11 @@ const OTPVerificationDialog = ({ open, setOpen}) => {
   const [password, setPassword] = useState("");
   const[email,setEmail]= useState("");
   const [confirmPassword, setConfirmPassword] = useState("");  // Added confirm password state
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    
     // Check if passwords match
     if (password !== confirmPassword) {
       toast.error("Passwords do not match.");
@@ -21,15 +22,20 @@ const OTPVerificationDialog = ({ open, setOpen}) => {
     }
 console.log(email,otp,password,confirmPassword);
     try {
+      setLoading(true);
       const res = await axios.post('https://social-media-platform-0937.onrender.com/api/v1/user/verifyUpdate', { 
         email:email, otp:otp, password:password, confirmPassword:confirmPassword });
       console.log(email,otp,password,confirmPassword);
       if (res.data.success) {
         toast.success("Password reset successful.");
+        setPassword('');
         setOpen(false);
       }
     } catch (error) {
       toast.error("OTP verification failed.");
+    }
+    finally {
+      setLoading(false);
     }
   };
 
@@ -64,7 +70,7 @@ console.log(email,otp,password,confirmPassword);
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
           <Button type="submit" className="w-full bg-red-600 text-white">
-            Verify & Reset Password
+          {loading ? "Verifying..." : "Verify & Reset Password"} 
           </Button>
         </form>
       </DialogContent>

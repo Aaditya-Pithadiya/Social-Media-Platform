@@ -286,6 +286,9 @@ const Post = ({ post }) => {
         </div>
       </div>
       <span className="font-medium text-gray-900 block mb-2">
+        {post.caption} 
+      </span>
+      <span className="font-medium text-gray-900 block mb-2">
         {postLike} likes
       </span>
       {comment.length > 0 && (

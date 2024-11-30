@@ -132,7 +132,7 @@ const AuthForm = () => {
                   Forgot Password?
                 </a>
               </div>
-              <button type="submit" className="w-full bg-red-600 text-white p-2 rounded-md">Login</button>
+              <button type="submit" className="w-full bg-red-600 text-white p-2 rounded-md">{loading ? "Verifying..." : "Login"}</button>
               <div className="mt-4 text-white">
                 Don't have an account? 
                 <a href="#" className="text-red-400" onClick={() => setIsLoginActive(false)}> Sign up</a>
@@ -181,7 +181,7 @@ const AuthForm = () => {
                 className={`w-full bg-red-500 text-white p-2 rounded-md ${!termsAccepted ? 'opacity-50 cursor-not-allowed' : ''}`} 
                 disabled={!termsAccepted}
               >
-                Sign up
+                {loading ? "Verifying..." : "Sign up"}
               </button>
               <div className="mt-4 text-white">
                 Already have an account? 

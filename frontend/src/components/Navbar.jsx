@@ -22,6 +22,7 @@ const TopNavbar = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false); // State for Logout Confirmation
   const [openNotificationPopover, setOpenNotificationPopover] = useState(false); // Notification popover state
+  const [clickedButton, setClickedButton] = useState(null); // Track clicked button state
   const searchRef = useRef(null); // Reference for search input and results
   const dropdownRef = useRef(null); // Reference for dropdown menu
   const navigate = useNavigate();
@@ -37,7 +38,7 @@ const TopNavbar = () => {
       }
       try {
         const response = await axios.get(
-          `https://social-media-platform-0937.onrender.com/api/v1/user/search`,
+          "https://social-media-platform-0937.onrender.com/api/v1/user/search",
           {
             params: { query: searchQuery },
             withCredentials: true,
@@ -54,6 +55,13 @@ const TopNavbar = () => {
     const debounceSearch = setTimeout(fetchSearchResults, 300);
     return () => clearTimeout(debounceSearch);
   }, [searchQuery]);
+
+  const handleButtonClick = (buttonName) => {
+    setClickedButton(buttonName); // Set which button was clicked
+    setTimeout(() => {
+      setClickedButton(null); // Reset after 1 second
+    }, 100);
+  };
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -92,21 +100,34 @@ const TopNavbar = () => {
     }
   };
 
+  const getButtonClass = (buttonName) => {
+    if (clickedButton === buttonName) {
+      return "bg-gray-800 text-white"; // Red when clicked
+    }
+    return "bg-gray-800 text-gray-200 hover:bg-gray-700"; // Default
+  };
+
   return (
-    <div className="w-full fixed top-0 z-10 bg-gray-900 border-b border-gray-700">
+    <div className="w-full fixed top-0 z-10 bg-gray-800 border-b border-gray-700">
       {/* Navbar */}
       <div className="flex items-center justify-between px-4 h-16">
         {/* Left Section */}
         <div className="flex items-center space-x-6">
           <button
-            onClick={() => navigate("/")}
-            className="flex items-center p-2 rounded-lg hover:bg-gray-700 text-red-400"
+            onClick={() => {
+              handleButtonClick("home");
+              navigate("/");
+            }}
+            className={`flex items-center p-2 rounded-lg ${getButtonClass("home")}`}
           >
             <AiOutlineHome className="w-6 h-6" />
           </button>
           <button
-            onClick={() => navigate("/chat")}
-            className="flex items-center p-2 rounded-lg hover:bg-gray-700 text-red-400"
+            onClick={() => {
+              handleButtonClick("message");
+              navigate("/chat");
+            }}
+            className={`flex items-center p-2 rounded-lg ${getButtonClass("message")}`}
           >
             <AiOutlineMessage className="w-6 h-6" />
           </button>
@@ -155,7 +176,7 @@ const TopNavbar = () => {
             onOpenChange={handleNotificationPopoverChange}
           >
             <Popover.Trigger asChild>
-              <button className="relative p-2 rounded-lg hover:bg-gray-700 text-red-400">
+              <button className="relative p-2 rounded-lg hover:bg-gray-700 text-gray-200">
                 <AiOutlineBell className="w-6 h-6" />
                 {likeNotification.length > 0 && (
                   <span className="absolute top-0 right-0 bg-red-600 text-white text-xs rounded-full px-1">
@@ -164,7 +185,7 @@ const TopNavbar = () => {
                 )}
               </button>
             </Popover.Trigger>
-            <Popover.Content className="w-48 bg-gray-800 text-white rounded shadow p-4">
+            <Popover.Content className="w-48 bg-gray-800 text-white rounded shadow p-4 transition-transform duration-200">
               <div>
                 {likeNotification.length === 0 ? (
                   <p>No new notification</p>
@@ -213,22 +234,17 @@ const TopNavbar = () => {
               </Avatar>
             </button>
             {dropdownOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-gray-800 text-white shadow-md rounded-lg py-2 z-20">
+              <div className="absolute top-full right-0 w-48 bg-gray-800 rounded-lg shadow-lg mt-2 z-10">
                 <button
-                  onClick={() => {
-                    setDropdownOpen(false);
-                    navigate(`/profile/${user?._id}`);
-                  }}
-                  className="block w-full px-4 py-2 text-left hover:bg-gray-700"
+                  onClick={() => navigate("/profile")}
+                  className="w-full px-4 py-2 text-left text-white hover:bg-gray-700"
                 >
                   View Profile
                 </button>
+
                 <button
-                  onClick={() => {
-                    setDropdownOpen(false);
-                    setLogoutConfirmOpen(true); // Open confirmation dialog
-                  }}
-                  className="block w-full px-4 py-2 text-left hover:bg-gray-700 text-red-500"
+                  onClick={() => setLogoutConfirmOpen(true)}
+                  className="w-full px-4 py-2 text-left text-red-500 hover:bg-gray-700"
                 >
                   Log Out
                 </button>
@@ -238,10 +254,7 @@ const TopNavbar = () => {
         </div>
       </div>
 
-      {/* CreatePost Dialog */}
-      <CreatePost open={open} setOpen={setOpen} />
-
-      {/* Logout Confirmation Modal */}
+      {/* Logout Confirmation */}
       {logoutConfirmOpen && (
         <div className="fixed inset-0 flex justify-center items-center bg-gray-900 bg-opacity-50 z-30">
           <div className="bg-gray-800 rounded-lg p-6 w-96 shadow-lg">

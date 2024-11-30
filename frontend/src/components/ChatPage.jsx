@@ -52,7 +52,7 @@ const ChatPage = () => {
   return (
     <div className="flex h-screen">
       {/* Sidebar - Users List */}
-      <section className="w-1/4 sticky bg-gray-900 p-4 ml-24 h-full overflow-y-auto border border-gray-300">
+      <section className="w-1/4 sticky bg-gray-900 p-4 h-full overflow-y-auto border border-gray-300">
         <h1 className="font-bold mb-4 text-xl text-gray-100">
           {userProfile?.username}
         </h1>
@@ -109,10 +109,10 @@ const ChatPage = () => {
             </div>
 
             {/* Messages Component */}
-            <Messages selectedUser={selectedUser} />
+            <Messages selectedUser={selectedUser} className="mb-[73px]"/>
 
             {/* Input Message Box */}
-            <div className="flex items-center p-4 border-t border-gray-700 bg-gray-800">
+            <div className="flex items-center p-4 border-t border-gray-700 bg-gray-800 fixed bottom-0 left-[25%] w-[75%]">
               <Input
                 value={textMessage}
                 onChange={(e) => setTextMessage(e.target.value)}
