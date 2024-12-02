@@ -235,7 +235,7 @@ const TopNavbar = () => {
             {dropdownOpen && (
               <div className="absolute top-full right-0 w-48 bg-gray-800 rounded-lg shadow-lg mt-2 z-10">
                 <button
-                  onClick={() => navigate("/profile/${user?._id}")}
+                  onClick={() => navigate(`/profile/${user?._id}`)}
                   className="w-full px-4 py-2 text-left text-white hover:bg-gray-700"
                 >
                   View Profile
